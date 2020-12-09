@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <style type="text/css">
+    body,
+    html,
+    #allmap {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=E06eb9d756d0eafc722effb355657b4c"></script>
+  <title>车辆运行轨迹测试</title>
+  <script src="http://c.cnzz.com/core.php"></script>
+  <script src="/socket.io.js"></script>
+</head>
+
+<body>
+  <div id="allmap"></div>
+</body>
+
+</html>
+<script type="text/javascript">
+  let socket = io();
+  let num = 1;
+  // 设置起点
+  let startLong = 115.944523;
+  let startLat = 28.651165;
+  let endLong = startLong;
+  let startLatendLat = startLat;
+
+
+
+  // 百度地图API功能
+  let map = new BMap.Map("allmap"); // 创建Map实例
+  map.centerAndZoom(new BMap.Point(startLong, startLat), 15); // 初始化地图,设置中心点坐标和地图级别
+  map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+  map.setCurrentCity("南昌"); // 设置地图显示的城市 此项是必须设置的
+  map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+
+  // setInterval(goWay, 3000);
+  let carMk;
+  let myIcon = new BMap.Icon("./car1.jpeg", new BMap.Size(50, 20), {
+    imageOffset: new BMap.Size(0, 0)
+  }); //卡车 BMap.Size(50,20) width height
+
+  // function goWay() {
+  //   startLong = endLong;
+  //   startLat = endLat;
+  //   endLong = getRound(endLong);
+  //   endLat = getRound(endLat);
+
+  //   drawIcon(startLong, startLat, endLong, endLat);
+  // }
+
+  function getRound(temp) {
+    let i = Math.round(Math.random() * 9 + 1);
+    if (i % 2 == 0) {
+      return temp + i * 0.0001;
+    } else {
+      return temp - i * 0.0001;
+    }
+  }
+
+  function getRound1(temp) {
+    let i = Math.round(Math.random() * 9 + 1);
+    if (i % 2 == 0) {
+      return temp + i * 0.0002;
+    } else {
+      return temp - i * 0.0002;
+    }
+  }
+
+  function drawGreenLine(startLong, startLat, endLong, endLat) {
+    let polyline = new BMap.Polyline([
+      new BMap.Point(startLong, startLat), //起始点的经纬度
+      new BMap.Point(endLong, endLat) //终止点的经纬度
+    ], {
+      strokeColor: "green", //设置颜色 
+      strokeWeight: 3, //宽度
+      strokeOpacity: 1
+    }); //透明度
+    map.addOverlay(polyline);
+  }
+
+  function drawIcon(startLong, startLat, endLong, endLat) {
+    if (carMk) {
+      map.removeOverlay(carMk);
+    }
+    carMk = new BMap.Marker(
+      new BMap.Point(endLong, endLat), //起始点的经纬度
+      {
+        icon: myIcon
+      });
+    map.addOverlay(carMk);
+    drawGreenLine(startLong, startLat, endLong, endLat);
+  }
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // drawGreenLine(startLong, startLat, startLong+0.0011, startLat+0.0011);
+    socket.on('message', function(msg){
+      console.log(`绘制坐标${num}: `, msg);
+      endLong = parseFloat(msg.lng)
+      endLat = parseFloat(msg.lat)
+      drawGreenLine(startLong, startLat, endLong, endLat);
+      // socket.emit('message', 'send to server');
+      num += 1
+      startLong = endLong
+      startLat = endLat
+    });
+  })
+</script>

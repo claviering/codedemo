@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="preferenceResearch"></div>
+  <div class="weui-toast weui-toast_text vux-toast-middle" style="width: 7.6em; display: none;">
+    <p class="weui-toast__content">第1个问题未选</p>
+  </div>
+</body>
+<style>
+  body{margin:0}.preference-research{background-image:url(https://static-td.oss-cn-shenzhen.aliyuncs.com/files/Front-ent/CUSTOMER_FRONT_END/preference-research/cg-preference-research-bg.png);background-repeat:no-repeat;background-position:top;background-size:cover;padding-top:30vh;padding-bottom:25vh}@media only screen and (width:375px) and (height:812px){.preference-research{padding-top:25vh}}.question-content{padding-bottom:2.1335rem}.question-title-content{display:flex}.question-title-content .index{width:-webkit-max-content;width:-moz-max-content;width:max-content;padding-left:.55471rem}.question-title-content .title{width:80%}.question-title-content .question-title{font-family:STSongti-SC-Regular;font-size:.68272rem;color:#000;letter-spacing:.0204816rem;margin-bottom:.59738rem;display:inline-block}.question-options{display:flex;flex-wrap:wrap;justify-content:space-between;padding:0 .55471rem}.question-item{width:45%;height:1.45078rem;line-height:1.40811rem;border:1px solid #000;border-radius:4px;font-family:STSongti-SC-Light;font-size:.59738rem;color:#000;letter-spacing:0;margin-bottom:.29869rem;padding-left:.29869rem}.active{background:#e0cde1}.submit{height:1.96282rem;line-height:1.96282rem;margin:auto;width:6.74186rem;background:hsla(0,0%,100%,.51);border-radius:4px;font-family:STSongti-SC-Light;font-size:.8534rem;color:#000;letter-spacing:.025602rem;text-align:center}.weui-toast{position:fixed;z-index:5001;width:7.6em;min-height:7.6em;top:180px;left:50%;margin-left:0;background:hsla(0,0%,7%,.7);text-align:center;border-radius:5px;color:#fff}.weui-toast_text{min-height:0}.vux-toast-middle{top:50%;transform:translateX(-50%) translateY(-50%)}.weui-toast__content{margin:0;padding-top:10px;padding-bottom:10px;border-radius:15px;font-size:16px}
+</style>
+<script>
+  let questionList = [
+  {
+    "title": "您从事哪一方面的工作？",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 金融/房地产行业",
+        "selected": true
+      },
+      {
+        "text": "B 医疗/教育/法律行业",
+        "selected": false
+      },
+      {
+        "text": "C 互联网行业",
+        "selected": false
+      },
+      {
+        "text": "D 时尚行业",
+        "selected": false
+      },
+      {
+        "text": "E 影视/艺术行业",
+        "selected": false
+      },
+      {
+        "text": "F 私营业主/自由职业者",
+        "selected": false
+      },
+      {
+        "text": "G 事业单位/公务员",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您的兴趣爱好？（多选）",
+    "choice": 0,
+    "options": [
+      {
+        "text": "A 美容/保养",
+        "selected": false
+      },
+      {
+        "text": "B 时尚潮流/服饰穿搭",
+        "selected": false
+      },
+      {
+        "text": "C 旅行",
+        "selected": false
+      },
+      {
+        "text": "D 乐器/舞蹈",
+        "selected": false
+      },
+      {
+        "text": "E 电影/电视剧/明星娱乐",
+        "selected": false
+      },
+      {
+        "text": "F 子女教育/自我进修",
+        "selected": false
+      },
+      {
+        "text": "G 运动/健身",
+        "selected": false
+      },
+      {
+        "text": "H 社交休闲娱乐",
+        "selected": false
+      },
+      {
+        "text": "I 美食",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "哪种着装场景，是您购买我们品牌服装的重要因素?",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 商务约见",
+        "selected": false
+      },
+      {
+        "text": "B 社交宴会",
+        "selected": false
+      },
+      {
+        "text": "C 日常工作",
+        "selected": false
+      },
+      {
+        "text": "D 休闲约会",
+        "selected": false
+      },
+      {
+        "text": "E 旅行度假",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "上一题选择的着装场景，您更喜欢哪一种风格打扮?",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 知性大方",
+        "selected": false
+      },
+      {
+        "text": "B 甜美淑女",
+        "selected": false
+      },
+      {
+        "text": "C 浪漫优雅",
+        "selected": false
+      },
+      {
+        "text": "D 时尚干练",
+        "selected": false
+      },
+      {
+        "text": "E 少女感",
+        "selected": false
+      },
+      {
+        "text": "F 潮流复古",
+        "selected": false
+      },
+      {
+        "text": "G 前卫个性 ",
+        "selected": false
+      },
+      {
+        "text": "H 无固定",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您对奢侈类/轻奢类服装品牌有什么购买诉求?",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 限量定制，彰显身份地位",
+        "width": "100%",
+        "selected": false
+      },
+      {
+        "text": "B 独特设计，明星潮流热捧",
+        "width": "100%",
+        "selected": false
+      },
+      {
+        "text": "C 品牌的辨识度强，特定场合需要",
+        "width": "100%",
+        "selected": false
+      },
+      {
+        "text": "D 超高性价比或偶然打折",
+        "width": "100%",
+        "selected": false
+      },
+      {
+        "text": "E 没有购买需求",
+        "width": "100%",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您日常关注服装潮流资讯的途径有哪些？（可选1-3项）",
+    "choice": 3,
+    "options": [
+      {
+        "text": "A 微博",
+        "selected": false
+      },
+      {
+        "text": "B 小红书",
+        "selected": false
+      },
+      {
+        "text": "C 抖音",
+        "selected": false
+      },
+      {
+        "text": "D 微信公众号",
+        "selected": false
+      },
+      {
+        "text": "E 线下实体广告（杂志、橱窗展示",
+        "width": "100%",
+        "selected": false
+      },
+      {
+        "text": "F 线下品牌活动",
+        "selected": false
+      },
+      {
+        "text": "G 其他",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您之后是否会尝试/或继续在我们品牌小程序微店上购买衣服？",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 会",
+        "selected": false
+      },
+      {
+        "text": "B 不会",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您觉得，我们品牌小程序增加以下哪些内容会更好？",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 个性化的商品推荐",
+        "selected": false
+      },
+      {
+        "text": "B 趣味的游戏互动",
+        "selected": false
+      },
+      {
+        "text": "C 专属性的优惠福利",
+        "selected": false
+      },
+      {
+        "text": "D 更多精选搭配",
+        "selected": false
+      },
+      {
+        "text": "E 买家秀展示",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您在小红书/微信/微博等社交平台，喜欢关注哪方面内容？（多选）",
+    "choice": 0,
+    "options": [
+      {
+        "text": "A 美食",
+        "selected": false
+      },
+      {
+        "text": "B 时尚/服装",
+        "selected": false
+      },
+      {
+        "text": "C 美容/美妆",
+        "selected": false
+      },
+      {
+        "text": "D 家居或生活用品",
+        "selected": false
+      },
+      {
+        "text": "E 健身或养生类",
+        "selected": false
+      },
+      {
+        "text": "F 亲子或教育类",
+        "selected": false
+      },
+      {
+        "text": "G 成长或生活哲学类",
+        "selected": false
+      },
+      {
+        "text": "H 其他",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您观看直播的主要原因是？",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 看到上身试穿效果",
+        "selected": false
+      },
+      {
+        "text": "B 学到搭配建议",
+        "selected": false
+      },
+      {
+        "text": "C 产品价格更优惠",
+        "selected": false
+      },
+      {
+        "text": "D 喜欢主播的直播风格",
+        "selected": false
+      },
+      {
+        "text": "E 直播抽奖礼",
+        "selected": false
+      },
+      {
+        "text": "F 没有时间看直播",
+        "selected": false
+      },
+      {
+        "text": "G 从不看直播",
+        "selected": false
+      }
+    ]
+  },
+  {
+    "title": "您更希望收到品牌定制的什么节日礼品",
+    "choice": 1,
+    "options": [
+      {
+        "text": "A 纯棉毛巾/浴巾",
+        "selected": false
+      },
+      {
+        "text": "B 饰品系带领花",
+        "selected": false
+      },
+      {
+        "text": "C 首饰收纳盒",
+        "selected": false
+      },
+      {
+        "text": "D 丝巾/围巾",
+        "selected": false
+      },
+      {
+        "text": "E 旅行收纳袋",
+        "selected": false
+      },
+      {
+        "text": "F 旅行便携真丝拖鞋",
+        "selected": false
+      },
+      {
+        "text": "G 旅行便携枕被套",
+        "selected": false
+      },
+      {
+        "text": "H 羊毛羊绒专用清洁液",
+        "selected": false
+      },
+      {
+        "text": "I 手机包",
+        "selected": false
+      },
+      {
+        "text": "J 便携式熨斗",
+        "selected": false
+      }
+    ]
+  }
+]
+
+let app = function (isLogin, hasSubmit) {
+  let loginUrl = 'http://fun.trendy.invcloud.cn/trendyoch/index.php/home/actdhmembercard/index/actstr/20200828';
+  let postUrl = 'http://fun.trendy.invcloud.cn/trendyoch/index.php/home/actcg20200828//ajaxAnswers';
+  this.initDom = function (appId, questionList) {
+    let app = document.getElementById(appId);
+    let domList = ''
+    questionList.forEach((item, index) => {
+      let optionList = '';
+      item.options.forEach((option, optionIndex) => {
+        let activeClass = option.selected ? 'active' : '';
+        optionList = optionList + `<div 
+            class="question-item ${activeClass}"
+            data-index="${index}"
+            data-choice="${item.choice}"
+            data-choice-index="${optionIndex}"
+            style="width: ${option.width || ''}">
+            ${option.text}
+          </div>`
+      });
+      domList = domList + `<div class="question-content">
+        <div class="question-title-content">
+          <div class="question-title index">${index + 1}、</div>
+          <div class="question-title title">${item.title}</div>
+        </div>
+        <div class="question-options">
+          ${optionList}
+        </div>
+      </div>`
+    });
+    let submit = hasSubmit ? '' : '<div class="submit">提交</div>';
+    app.innerHTML = `<div class="preference-research">
+      <div class="preference-research-content">
+        ${domList}
+        ${submit}
+      </div>
+    </div>`;
+    initSelectEven('.preference-research');
+    initSubmitEven('.submit')
+  }
+  function rem(document, window) {
+    (function(doc, win) {
+      var docEl = doc.documentElement,
+          resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+          recalc = function() {
+              var clientWidth = docEl.clientWidth;
+              if (!clientWidth) return;
+              docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+          };
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+  }
+  function updateQuestion(index, questionList) {
+    let questionDomList = document.querySelectorAll('.question-content');
+    let questionItemDomList = questionDomList[index].querySelectorAll('.question-options > .question-item ');
+    let item = questionList[index];
+    item.options.forEach((option, optionIndex) => {
+      if (option.selected) {
+        questionItemDomList[optionIndex].classList.add('active');
+      } else {
+        questionItemDomList[optionIndex].classList.remove('active');
+      }
+    });
+  }
+  function initSelectEven(clickDomClass) {
+    let clickDom = document.querySelector(clickDomClass);
+    if (hasSubmit) return;
+    clickDom.onclick = function (e) {
+      if (!isLogin) {
+        window.location = loginUrl;
+        return;
+      }
+      // index 第几个问题
+      // choice 第几个问题能选多少个答案
+      // choiceIndex 第index个问题的第 choiceIndex 个选项
+      let {index, choice, choiceIndex} = e.target.dataset;
+      if (!index) return;
+      index = Number.parseInt(index);
+      choice = Number.parseInt(choice);
+      choiceIndex = Number.parseInt(choiceIndex);
+      // 单选
+      if (choice === 1) {
+        questionList[index].options.forEach((option, tmpIndex) => {
+          option.selected = tmpIndex === choiceIndex ? !option.selected : false;
+          return option;
+        });
+      } else if (choice > 1) { // 多选
+        let curChoice = 0; // 已选个数
+        questionList[index].options.forEach((option, tmpIndex) => {
+          if (option.selected) {
+            curChoice = curChoice + 1;
+          }
+        });
+        questionList[index].options.forEach((option, tmpIndex) => {
+          if (tmpIndex === choiceIndex && curChoice <= choice) {
+            option.selected = (curChoice + 1 <= choice) ? !option.selected : false;
+          }
+          return option;
+        });
+      } else if (choice === 0) { // 无限选
+        questionList[index].options.forEach((option, tmpIndex) => {
+          if (tmpIndex === choiceIndex) {
+            option.selected = !option.selected;
+          }
+          return option;
+        });
+      }
+      questionList = JSON.parse(JSON.stringify(questionList))
+      updateQuestion(index, questionList);
+    }
+  }
+  function toastShow(text) {
+    let toastDom = document.querySelector('.weui-toast');
+    let textDom = document.querySelector('.weui-toast__content');
+    textDom.textContent = text;
+    toastDom.style.display = 'block';
+    setTimeout(() => {
+      toastDom.style.display = 'none';
+    }, 2000);
+  }
+  function scrollToQuestion(index) {
+    let questionDomList = document.querySelectorAll('.question-content');
+    questionDomList[index].scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
+  function hiddenSubmit() {
+    let submitDom = document.querySelector('.submit')
+    submitDom.style.display = 'none';
+  }
+  function submit(list) {
+    console.log('这里是请求接口');
+    console.log(list);
+    axios.post(postUrl, {daan: list})
+  }
+  function initSubmitEven(submitClass) {
+    let clickDom = document.querySelector(submitClass);
+    if (!clickDom) return;
+    clickDom.onclick = function () {
+      let text = '问卷已提交，谢谢！';
+      if (hasSubmit) {
+        text = '您已经填写过了，谢谢您';
+      } else {
+        let hasComplete = true; // 校验问题全部都填了
+        let hasSelectOption = false; // 校验问题的选项至少选一个
+        for (let index = 0; index < questionList.length; index++) {
+          const question = questionList[index];
+          for (let optionIndex = 0; optionIndex < question.options.length; optionIndex++) {
+            const option = question.options[optionIndex];
+            hasSelectOption = hasSelectOption || option.selected; // 选项使用 ||，至少选一个
+          }
+          if (!hasSelectOption) {
+            let text = '第' + (index + 1) + '个问题未选';
+            scrollToQuestion(index);
+            toastShow(text);
+            hasComplete = false;
+            return;
+          }
+          hasComplete = hasComplete && hasSelectOption; // 全部问题使用 && 校验全部都要填
+          hasSelectOption = false;
+        }
+        if (!hasComplete) {
+          return;
+        }
+        hasSubmit = true;
+        hiddenSubmit();
+        submit(questionList);
+      }
+      toastShow(text);
+    }
+  }
+  rem(document, window);
+}
+let isLogin = true;
+let hasSubmit = false;
+let App = new app(isLogin, hasSubmit);
+App.initDom('preferenceResearch', questionList)
+</script>
+</html>

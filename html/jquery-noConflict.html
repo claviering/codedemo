@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    var $ = '我是其他的$变量，jQuery不要覆盖我' ;
+  </script>
+  <script src="./jquery.js"></script>
+  <script>
+    $.noConflict();
+    console.log($);  // 我是其他的$，jQuery不要覆盖我
+  </script>
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>

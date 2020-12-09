@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+    .content{
+      width: 800px;
+      height: 800px;
+      overflow: hidden;
+      position: relative;
+    }
+    .mark{
+      width: 800px;
+      height: 800px;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      opacity: 0.5;
+      background-color: black;
+      -webkit-clip-path: url(#clip);
+      clip-path: url(#clip);
+    }
+  </style>
+  <svg height="0" width="0" class="svg-clip" style="position:absolute">
+    <defs>
+      <clipPath id="clip" clipPathUnits="objectBoundingBox">
+        <path d="M0,0 L1,0 1,1 0,1 0,0M.75,.5A.25,.25 0 1 0 .25,.5A.25,.25 0 1 0 .75,.5z" />
+    </clipPath>
+    </defs>
+  </svg>
+  <div class="content">
+    <div class="mark"></div>
+  </div>
+  <script>
+    let content = document.querySelector('.content')
+    for (let index = 0; index < 1000; index++) {
+      var a = document.createElement("a");
+      a.innerHTML = '知乎  '
+      a.href = 'https://www.zhihu.com/follow'
+      content.append(a)
+    }
+  </script>
+</body>
+</html>

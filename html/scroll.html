@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .box{
+    height: 200px;
+    width: 200px;
+    overflow: scroll;
+    background-color: black;
+  }
+  .scroll-box{
+    width: 400px;
+    height: 400px;
+  }
+</style>
+<body>
+  <div class="box">
+    <div class="scroll-box">
+  </div>
+  </div>
+</body>
+<script>
+  document.querySelector('.box').addEventListener('scroll', function (e) {
+    console.log('e.target.scrollLeft', e.target.scrollLeft);
+  })
+  document.querySelector('.login-5-image-content .image-group').addEventListener('scroll', function (e) {
+    console.log('e.target.scrollLeft', e.target.scrollLeft);
+  })
+  document.querySelector('.login-5-image-content').addEventListener('scroll', function (e) {
+    console.log('e.target.scrollLeft', e.target.scrollLeft);
+  })
+  // document.querySelector('body').addEventListener('scroll', function (e) {
+  //   console.log('222');
+  // })
+  window.addEventListener('scroll', function(e) {
+    console.log('222');
+  });
+</script>
+</html>
