@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1px 边框效果</title>
+</head>
+<body>
+  <div class="box text">using box-shadow</div>
+  <div class="box-1 text">using border</div>
+</body>
+<style>
+  .text{
+    height: 140px;
+    line-height: 140px;
+    width: 140px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  .box{
+    box-shadow: 0 0 0px 1px #000;
+  }
+  .box-1{
+    border: 1px solid #000;
+  }
+</style>
+</html>
