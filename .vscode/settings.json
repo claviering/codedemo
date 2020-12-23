@@ -1,5 +1,6 @@
 {
   "less.compile": {
-    "outExt": ".wxss"
+    "compress":  true,
+    "outExt": ".css"
   }
 }

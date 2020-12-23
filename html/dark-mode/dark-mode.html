@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 声明当前页面支持 light 和 dark 两种模式，系统切换到深色模式时，浏览器默认样式也会切换到深色； -->
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="./dark-mode.css">
+  <link rel="stylesheet" href="./toggle.css">
+  <title>暗黑模式样式</title>
+</head>
+<body>
+  <input type="checkbox" class="toggle" onclick="toggleMode()">
+</body>
+<script>
+  function toggleMode() {
+    let bodyDom = document.querySelector("body");
+    let theme = bodyDom.getAttribute('data-weui-theme');
+    bodyDom.setAttribute('data-weui-theme', theme === 'dark' ? 'light' : 'dark');
+  }
+</script>
+</html>
