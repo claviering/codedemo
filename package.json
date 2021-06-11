@@ -1,0 +1,66 @@
+{
+  "name": "noderoom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aes-256-gcm": "^1.0.3",
+    "aliyun-api-gateway": "^1.1.6",
+    "axios": "^0.18.0",
+    "babel-loader": "^8.1.0",
+    "bluebird": "^3.7.1",
+    "clockpicker": "^0.0.7",
+    "coinkey": "^3.0.0",
+    "csv-parser": "^2.2.0",
+    "csv-parse": "^4.4.0",
+    "csv": "^5.1.1",
+    "csv-writer": "^1.5.0",
+    "debug": "^4.1.1",
+    "ecdsa": "^0.7.0",
+    "exceljs": "^1.7.0",
+    "express": "^4.16.4",
+    "highcharts": "^8.0.4",
+    "i": "^0.3.6",
+    "inquirer": "^6.2.2",
+    "ip": "^1.1.5",
+    "jest": "^26.6.3",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "node-rsa": "^1.0.7",
+    "npm": "^6.14.8",
+    "ora": "^3.0.0",
+    "pem": "^1.14.2",
+    "protobufjs": "^6.9.0",
+    "qr-image": "^3.2.0",
+    "qs": "^6.6.0",
+    "redis": "^2.8.0",
+    "readline-sync": "^1.4.9",
+    "secure-random": "^1.1.1",
+    "short-uuid": "^3.1.1",
+    "sleep": "^6.0.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.3.0",
+    "urllib": "^2.34.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "wechaty": "^0.22.6",
+    "xlsx": "^0.14.1"
+  },
+  "devDependencies": {
+    "mockjs": "^1.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claviering/codedemo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/claviering/codedemo/issues"
+  },
+  "homepage": "https://github.com/claviering/codedemo#readme"
+}

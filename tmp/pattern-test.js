@@ -53,9 +53,14 @@ let testMap = {
     pattern: /^\+?[1-9]\d*$/,
     testList: [-1, 0, 1, 2, 3, 4.55]
   },
+  // 小于等于0 的整数
+  5: {
+    pattern: /^-[1-9]\d*|0$/,
+    testList: [-1, 0, -1.11,-2, 3, 4.55]
+  },
 }
 
-let index = 4;
+let index = 5;
 let pattern = testMap[index].pattern;
 let testList = testMap[index].testList;
 testList.forEach(item => {

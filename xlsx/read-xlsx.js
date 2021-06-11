@@ -2,8 +2,8 @@ const XLSX = require('xlsx')
 const fs = require('fs')
 let stream = fs.createWriteStream("data.json")
 
-let filePath = './resources.xlsx'
-let SheetHead = 'resources' // 表名称
+let filePath = './xlsx/data/ec开开店.xlsx'
+let SheetHead = '工作表1' // 表名称
 
 console.log('loading...')
 
