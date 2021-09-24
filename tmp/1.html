@@ -4,41 +4,18 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>
+
   <title>Document</title>
 </head>
 <body>
-  <div class="g-container">
-    <div class="section-one">translateZ(-1)</div>
-    <div class="section-two">translateZ(-2)</div>
-    <div class="section-three">translateZ(-3)</div>
-</div>
+  <div id="editor"></div>
 </body>
-<style>
-  html {
-    height: 100%;
-    overflow: hidden;
-}
-
-body {
-    perspective: 1px;
-    transform-style: preserve-3d;
-    height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-.g-container {
-    height: 150%;
-    font-size: 60px;
-  }
-  .section-one {
-      transform: translateZ(-1px);
-  }
-  .section-two {
-      transform: translateZ(-2px);
-  }
-  .section-three {
-      transform: translateZ(-3px);
-  }
-</style>
+<script>
+  ClassicEditor
+      .create( document.querySelector( '#editor' ) )
+      .catch( error => {
+          console.error( error );
+      } );
+</script>
 </html>
