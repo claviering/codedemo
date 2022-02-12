@@ -1,6 +1,6 @@
 
 // koa 中间件调度函数
-function compose (middleware) {
+function compose(middleware) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
   for (const fn of middleware) {
     if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
@@ -16,7 +16,7 @@ function compose (middleware) {
     // last called middleware #
     let index = -1
     return dispatch(0)
-    function dispatch (i) {
+    function dispatch(i) {
       if (i <= index) return Promise.reject(new Error('next() called multiple times'))
       index = i
       let fn = middleware[i]
@@ -33,6 +33,8 @@ function compose (middleware) {
 let arr = [];
 let middleware = [];
 middleware.push(async (context, next) => {
+  console.log('context', context);
+  context.data = '222';
   arr.push(1);
   await next();
   arr.push(4);
@@ -40,6 +42,7 @@ middleware.push(async (context, next) => {
 
 middleware.push(async (context, next) => {
   arr.push(2);
+  console.log('context', context);
   await next();
   arr.push(3);
 });
@@ -47,7 +50,7 @@ middleware.push(async (context, next) => {
 compose(middleware)
 
 async function run(params) {
-  await compose(middleware)();
+  await compose(middleware)({ data: '111' });
   console.log('arr', arr);
 }
 

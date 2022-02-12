@@ -3,7 +3,7 @@ let s = /^1000(.[0-9]{0,10})?$/g;
 let a = /^[0-1](.[0-9]{1,2})?$/g;
 
 let three = /^(?!1000)[1-9]\d{3}(\.[0-9]{0,10})?$/g; // [1001, 9999]
-let listThree = [1000, 1001, 2000,3021.4,3020.1, 9999, 10000];
+let listThree = [1000, 1001, 2000, 3021.4, 3020.1, 9999, 10000];
 
 let four = /^(?!(1|999)$)[1-9]\d{0,2}(\.[0-9]{0,10})?$/g; // [2, 999)
 let listfour = [1, 2, 3, 10, 11, 20, 999, 1000];
@@ -56,11 +56,11 @@ let testMap = {
   // 小于等于0 的整数
   5: {
     pattern: /^-[1-9]\d*|0$/,
-    testList: [-1, 0, -1.11,-2, 3, 4.55]
+    testList: [-1, 0, -1.11, -2, 3, 4.55]
   },
 }
 
-let index = 5;
+let index = 4;
 let pattern = testMap[index].pattern;
 let testList = testMap[index].testList;
 testList.forEach(item => {
