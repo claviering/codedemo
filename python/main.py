@@ -1,18 +1,16 @@
-from datetime import date
-from datetime import datetime
-# print(date.today().weekday())
-# print(datetime.today().replace(day=2))
-# print(datetime.today().replace(day=2).weekday())
-# print(["11"] == ["11"])
+import time
 
-def setM(m, l):
-    m["a"] = 2
-    l.append(1)
+def isAfter10AM():
+  now = time.localtime()
+  print(now)
+  if now.tm_hour >= 10:
+    return True
+  else:
+    return False
 
 def main():
-    m = {"a": 1}
-    print(m["a"])
-    print(m["b"])
+    m = isAfter10AM()
+    print(m)
 
 
 if __name__ == '__main__':
