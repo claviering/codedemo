@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 from datetime import timedelta
 from datetime import date
+from threading import Thread
 
 """
 原理: 不加载资源, 直接调用接口
@@ -72,7 +73,7 @@ def login(session, code, num=1):
                                 headers=Headers, data=payload, timeout=3)
         status = response.json()['status']
         if status != 200:
-            print("登陆失败, %s" % (response.json()['msg']))
+            print("登陆失败, %s" % (response.text))
             return login(session, getVerify(session))
         else:
             print("登陆成功")
@@ -82,16 +83,15 @@ def login(session, code, num=1):
         return login(session, code, num+1)
 
 
-def isAfter10AM():
+def isAfter0959AM():
     now = time.localtime()
-    print("请求数据时间: %d:%d:%d" % (now.tm_hour, now.tm_min, now.tm_sec))
-    if now.tm_hour >= 10:
+    if now.tm_hour >= 9 and now.tm_min >= 59:
         return True
     else:
         return False
 
 
-def getBookingUrl(session, date, num=1):
+def getBookingUrl(session, num=1):
     url = ''
     Headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36',
@@ -104,34 +104,27 @@ def getBookingUrl(session, date, num=1):
         "X-Requested-With": "XMLHttpRequest",
         "Connection": "keep-alive",
     }
-    try:
-        timeout = 1
-        if isAfter10AM():
-            timeout = 30  # 估计10点后，预约列表会有一个队列，等待时间长一点
-        else:
-            time.sleep(2)  # 10点前，保持登陆状态
-        response = session.post(
-            host + '/districtHousenumLog/getList', headers=Headers, timeout=timeout)
-        data = response.json()['data']
-        now = time.localtime()
-        print("返回数据时间: %d:%d:%d" % (now.tm_hour, now.tm_min, now.tm_sec))
-        for item in data:
-            print("预约日期: %s, 可预约数: %d, 总预约数: %d, sign: %s" %
-                  (item['date'], item['count'], item['total'], item['sign']))
-            if item['date'] == date:
-                checkinDate = item['date']
-                timespan = item['timespan']
-                sign = item['sign']
-                url = host + "/passInfo/confirmOrder?checkinDate=" + \
-                    checkinDate + "&t=" + str(timespan) + "&s=" + sign
-        print(url)
-        return url
-    except requests.exceptions.Timeout:
-        print("%d 获取预约列表超时, 重试中..." % (num))
-        return getBookingUrl(session, date, num+1)
+    now = time.localtime()
+    print("线程 %d 请求数据时间: %d:%d:%d" % (num, now.tm_hour, now.tm_min, now.tm_sec))
+    response = session.post(
+        host + '/districtHousenumLog/getList', headers=Headers)
+    data = response.json()['data']
+    now = time.localtime()
+    print("线程 %d 返回数据时间: %d:%d:%d" % (num, now.tm_hour, now.tm_min, now.tm_sec))
+    for item in data:
+        print("预约日期: %s, 可预约数: %d, 总预约数: %d, sign: %s" %
+              (item['date'], item['count'], item['total'], item['sign']))
+        if item['date'] == endDay:
+            checkinDate = item['date']
+            timespan = item['timespan']
+            sign = item['sign']
+            url = host + "/passInfo/confirmOrder?checkinDate=" + \
+                checkinDate + "&t=" + str(timespan) + "&s=" + sign
+    return url
 
 
-def booking(session, url, num=1):
+def booking(session, num=1):
+    url = getBookingUrl(session, num)
     Headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36',
         "Host": "hk.sz.gov.cn:8118",
@@ -141,34 +134,32 @@ def booking(session, url, num=1):
         "Sec-Fetch-Site": "same-origin",
         "Connection": "keep-alive"
     }
-    while True:
-        try:
-            print('拼命抢号中...')
-            response = session.get(url, headers=Headers,
-                                   timeout=30, verify=False)
-            print(response.text)
-            if '未到开放时间' in response.text:
-                print("未到开放时间, 抢号中...")
-                return booking(session, getBookingUrl(session, endDay), num+1)
-            elif '沒有可預約的數據' in response.text:
-                print("沒有可預約的數據, 抢号结束!")
-                return
-            else:
-                # 没有代码，先保存再分析一下
-                with open("booking" + str(random.random()) + ".html", "w", encoding="utf-8") as f:
-                    f.write(response.text)
-                    return booking(session, getBookingUrl(session, endDay), num+1)
-        except requests.exceptions.Timeout:
-            print("%d 预约超时, 重试中..." % (num))
-            return booking(session, getBookingUrl(session, endDay), num+1)
-
+    print('线程 %d 拼命抢号中...' % (num))
+    response = session.get(url, headers=Headers, verify=False)
+    print(response.text)
+    if '未到开放时间' in response.text:
+        print("未到开放时间, 抢号中...")
+    elif '沒有可預約的數據' in response.text:
+        print("线程 %d 沒有可預約的數據, 抢号结束!" % (num))
+    else:
+        # 没有代码，先保存再分析一下
+        with open("booking" + str(random.random()) + ".html", "w", encoding="utf-8") as f:
+            f.write(response.text)
+    return
 
 def main():
     session = requests.Session()
     code = getVerify(session)
     login(session, code)
-    url = getBookingUrl(session, endDay)
-    booking(session, url)
+    num = 1
+    while True:
+      t = Thread(target=booking, args=(session, num))
+      t.start()
+      num = num + 1
+      if isAfter0959AM():
+        time.sleep(1)
+      else:
+        time.sleep(30)
 
 
 if __name__ == '__main__':
