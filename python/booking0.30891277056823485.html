@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>健康驛站房間線上預約系統</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="apple-mobile-web-app-capable" content="no">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <link href="/css/succelist_min.css?v=1" rel="stylesheet" type="text/css">
+    <!--    <link href="/css/succelist.css?v=1" rel="stylesheet" type="text/css">-->
+
+
+</head>
+<body style="background:#fff;">
+<div class="layout_body" layout:fragment="content">
+    <section class="topBar"><a href="javascript:;" onclick="returnBack()" class="back"><i class="arrow arrow-l"></i></a>
+        <span>預約確認單</span>
+    </section>
+    <div class="order-info">
+        <div class="title">預約信息</div>
+        <div class="content">
+            <div class="flexbox">
+                <div class="flex1">姓名</div>
+                <div class="flex1 text-align-r c-3c3">王*</div>
+            </div>
+            <div class="flexbox">
+                <div class="flex1">證件號碼</div>
+                <div class="flex1 text-align-r c-3c3">ED****314</div>
+            </div>
+            <div class="flexbox">
+                <div class="flex1">預約時間</div>
+                <div class="flex1 text-align-r c-3c3">2022年02月22日</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 50px;">
+        <div class="order-info">
+            <div class="title"><span>同住人</span>：
+                <span>1</span>位
+            </div>
+        </div>
+        <div class="tzlist" style="margin-top:-25px">
+            <section class="card_info" style="border-width:0px;">
+                <div class="flexbox">
+                    <div class="flex1">
+                        <p><span class="mr20">
+                            <span>周*玮</span>
+                            <i class="p-satue">成年</i>
+                          </span>
+                            <span><span>年齡</span>：<span>22</span></span>
+                        </p>
+                        <p><span>往來港澳通行證</span>：<span>CA****679</span></p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="order-bottom wrap dingdan-footer">
+        <div class="flexbox">
+            <div class="nzmbox"><a href="javascript:void(0);">
+                <img id="img_verify" src="" onclick="getVerify(this);">
+            </a></div>
+            <div class="flex1"><input id="checkCode" maxlength="6" placeholder="請輸入驗證碼"
+                                      type="text"></div>
+            <button id="btnSubmit" class="order-btn-long" onclick="submitReservation()">
+                <span>確認訂單</span>
+            </button>
+        </div>
+    </div>
+
+    <!--    <div class="f-tiips" style="bottom: 60px;" th:text="#{passinfo.confirm.revserSuccessNoUpdateRoomUser}">-->
+    <!--        温馨提示：为了减少入境旅客等候时间，及时安排转运、入住等工作，请各位入境旅客尽量合理安排入境时间，于每日18时前通关，-->
+    <!--        每日20时后入境的旅客由口岸现场指挥部指定市内的一个区统一安置-->
+    <!--    </div>-->
+</div>
+
+<!--弹出窗-->
+<div id="mSueccss" class="mask" style="display: none;"></div>
+<div id="winSueccss" class="winpop" style="display: none;">
+    <section class="winpop-cont">
+        <p class="title">温馨提示</p>
+        <p class="c-323 f16" id="successTiShi">
+
+    </section>
+    <div class="flexbox btngroup">
+        <div class="flex1">
+            <button type="button" onclick="redict()">確定</button>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hidCheckinDate" value="2022-02-22">
+<input type="hidden" id="hidTimespan" value="1644976761121">
+<input type="hidden" id="hidSign" value="70a7f033e555cf8dff53fedef35d3f6e">
+<input type="hidden" id="hidHouseType" value="1">
+
+
+</div>
+
+    <script src="/js/dict/reserve.js?20201230"></script>
+    <script type="application/javascript">
+        var submitLoading = "\u63D0\u4EA4\u4E2D";
+        var submitRemport = "\u7D2F\u8A08\u723D\u7D043\u6B21\u5F8C\u8CEC\u6236\u5C07\u7121\u6CD5\u518D\u9810\u8A02\u9152\u5E97\uFF0C\u78BA\u5B9A\u8981\u9810\u8A02\u55CE\uFF1F";
+        var confirmResver = "\u78BA\u5B9A\u8981\u9810\u7D04\u55CE";
+        var resverrSuccess = "\u9810\u7D04\u6210\u529F";
+        var pleaseInputCode = "\u8ACB\u8F38\u5165\u9A57\u8B49\u78BC";
+
+        var orderSuccessTiShiShanwei = "\u70BA\u4E86\u6E1B\u5C11\u5165\u5883\u65C5\u5BA2\u7B49\u5019\u6642\u9593\uFF0C\u76EE\u7684\u5730\u70BA\u6C55\u5C3E\u7684\u8F49\u904B\u8ECA\u8F1B\u767C\u8ECA\u6642\u9593\u5B89\u6392\u70BA15\u6642\u548C20\u6642\uFF0C\u8ACB\u9810\u7D04\u6C55\u5C3E\u7684\u65C5\u5BA2\u63D0\u524D\u5408\u7406\u5B89\u6392\u597D\u901A\u95DC\u6642\u9593\u3002";
+        var orderSuccessTiShiHuiZhou = "\u70BA\u4E86\u6E1B\u5C11\u5165\u5883\u65C5\u5BA2\u7B49\u5019\u6642\u9593\uFF0C\u76EE\u7684\u5730\u70BA\u60E0\u5DDE\u7684\u8F49\u904B\u8ECA\u8F1B\u767C\u8ECA\u6642\u9593\u5B89\u6392\u70BA13\u6642\u523018\u6642\uFF0C\u6EFE\u52D5\u767C\u8ECA\uFF0C\u5BA2\u6EFF\u5373\u8D70\uFF0C\u6BCF\u65E520\u6642\u5F8C\u5165\u5883\u7684\u60E0\u5DDE\u65C5\u5BA2\u7531\u53E3\u5CB8\u73FE\u5834\u6307\u63EE\u90E8\u81E8\u6642\u5B89\u7F6E\u5357\u5C71\u5340\uFF0C\u7B2C\u4E8C\u5929\u8F49\u5165\u76EE\u7684\u5730\u5E02\uFF0C\u8ACB\u9810\u7D04\u60E0\u5DDE\u7684\u65C5\u5BA2\u63D0\u524D\u5408\u7406\u5B89\u6392\u597D\u901A\u95DC\u6642\u9593\u3002";
+        var orderSuccessTiSzYanTain = "\u7531\u65BC\u76EE\u7684\u5730\u5340\u65C5\u5BA2\u8F03\u5C11\uFF0C\u6BCF\u5929\u767C\u8ECA\u6642\u9593\u70BA15\u6642\u548C20\u6642\uFF0C\u8ACB\u5408\u7406\u5B89\u6392\u60A8\u7684\u51FA\u884C\u6642\u9593\u3002";
+        var orderSuccessTiSzDonguan = "\u56E0\u6771\u839E\u5927\u6717\u93AE\u767C\u73FE\u672C\u571F\u75C5\u4F8B\uFF0C\u6309\u7701\u9632\u8F38\u5165\u5C08\u73ED\u7D71\u4E00\u90E8\u7F72\uFF0C\u81EA12\u670815\u65E5\u8D77\uFF0C\u6771\u839E\u5E02\u66AB\u505C\u63A5\u6536\u6DF1\u5733\u7063\u5165\u5883\u65C5\u5BA2\uFF0C\u6062\u5FA9\u6642\u9593\u5F85\u5B9A\u3002\u53D7\u5F71\u97FF\u65C5\u5BA2\u4F5C\u70BA\u5E02\u5916\u65C5\u5BA2\uFF0C\u5728\u6DF1\u5733\u5404\u5340\u5B89\u7F6E\u3002";
+
+        var orderSuccessTiShiShanweiV2 = "\u6839\u64DA\u7701\u65B0\u51A0\u80BA\u708E\u9632\u63A7\u6307\u63EE\u8FA6\u5DE5\u4F5C\u90E8\u7F72\uFF0C\u81EA8\u67083\u65E5\u8D77\uFF0C\u6DF1\u5733\u7063\u53E3\u5CB8\u5165\u5883\u4EBA\u54E1\u66AB\u505C\u5411\u6C55\u5C3E\u5E02\u5206\u6D41\uFF0C\u8ACB\u77E5\u6089\u3002";
+        var orderSuccessTiShiHuiZhouV2 = "\u6839\u64DA\u7701\u65B0\u51A0\u80BA\u708E\u9632\u63A7\u6307\u63EE\u8FA6\u5DE5\u4F5C\u90E8\u7F72\uFF0C\u81EA8\u670810\u65E5\u8D77\uFF0C\u6DF1\u5733\u7063\u53E3\u5CB8\u5165\u5883\u4EBA\u54E1\u66AB\u505C\u5411\u60E0\u5DDE\u5E02\u5206\u6D41\uFF0C\u8ACB\u77E5\u6089\u3002";
+
+        var orderSuccessTiOther = "\u70BA\u4FDD\u8B49\u9806\u5229\u901A\u95DC\uFF0C\u8ACB\u60A8\u548C\u540C\u884C\u4EBA\u54E1\u5728\u5165\u5883\u524D24\u5C0F\u6642\u5167\uFF0C\u767B\u9304\u6D77\u95DC\u6307\u5C16\u7533\u5831\u5E73\u81FA\uFF0C\u9032\u884C\u5165\u5883\u5065\u5EB7\u7533\u5831\u3002";
+
+        $(function () {
+            // mySchedule();
+            getVerify();
+        });
+
+        function showComfirm() {
+            $("#mComfirm,#winComfirm").show();
+        }
+
+        function showSuccess(type) {
+            //汕尾
+            if (type == 1) {
+                $("#successTiShi").html(orderSuccessTiShiShanweiV2);
+            } else if (type == 2) {
+                $("#successTiShi").html(orderSuccessTiShiHuiZhouV2);
+            } else if (type == 3) {
+                $("#successTiShi").html(orderSuccessTiSzYanTain);
+            } else if (type == 4) {
+                $("#successTiShi").html(orderSuccessTiSzDonguan);
+            } else if (type == 9) {//其他
+                $("#successTiShi").html(orderSuccessTiOther);
+            }
+            $("#mSueccss,#winSueccss").show();
+        }
+
+        function redict() {
+            window.location.href = "/userPage/userCenter";
+        }
+
+        //提交预定凭证
+        function submitReservation() {
+            //$(".winpop,.mask").hide();
+            var checkCode = $("#checkCode").val();
+            if (checkCode == '') {
+                layerHelp.msg(pleaseInputCode);
+                return;
+            }
+            var isSubmit = false;
+            layerHelp.comfirm(confirmResver, function () {
+                if (isSubmit) {
+                    return;
+                }
+                $.ajax({
+                    type: "post",
+                    url: rootPath + "passInfo/submitReservation",
+                    data: {
+                        checkinDate: $("#hidCheckinDate").val(),
+                        checkCode: checkCode,
+                        houseType: $("#hidHouseType").val(),
+                        t: $("#hidTimespan").val(),
+                        s: $("#hidSign").val()
+
+                    },
+                    beforeSend: function () {
+                        isSubmit = true;
+                        $("#btnSubmit").attr("disabled", "disabled");
+                        layerHelp.loading(submitLoading);
+                    },
+                    success: function (data) {
+                        layer.closeAll();
+                        if(!isLogin(data)){
+                            return;
+                        }
+                        if (parseInt(data.status) == 200) {
+                            var purpose = data.data;
+                            layerHelp.msg(resverrSuccess,
+                                function () {
+                                    showSuccess(9);//其他
+                                    // if (purpose.city == '汕尾市') {
+                                    //     showSuccess(1);
+                                    // } else if (purpose.city == '惠州市') {
+                                    //     showSuccess(2);
+                                    // } else if (purpose.city == '东莞市') {
+                                    //     showSuccess(4);
+                                    // } else {
+                                    //     showSuccess(9);//其他
+                                    //     //window.location.href = "/userPage/userCenter";
+                                    // }
+                                });
+
+                        } else {
+                            getVerify();
+                            layerHelp.msg(data.msg, null, 4);
+                        }
+                    },
+                    error: function (e) {
+                        isSubmit = false;
+                        $("#btnSubmit").removeAttr("disabled");
+                        layer.closeAll();
+                    },
+                    complete: function () {
+                        isSubmit = false;
+                        $("#btnSubmit").removeAttr("disabled");
+
+                    }
+                });
+            })
+        }
+
+        //获取验证码
+        function getVerify() {
+            // $("#imgCode").on("click", function() {
+            $("#img_verify").attr("src", '/user/getVerify?' + Math.random());//jquery方式
+            // });
+        }
+
+        //判断是否登录
+        function isLogin(data) {
+            if(data.status==401){
+                window.location.href="/userPage/login";
+                return false;
+            }
+            return true;
+        }
+
+
+    </script>
+
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
