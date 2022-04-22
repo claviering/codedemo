@@ -1,31 +1,41 @@
-let FileSaver = require('file-saver'); // path to file-saver
-
-function exportAsExcel() {
-  let dataBlob = '...kAAAAFAAIcmtzaGVldHMvc2hlZXQxLnhtbFBLBQYAAAAACQAJAD8CAADdGAAAAAA='; // If have ; You should be split get blob data only
-  downloadFile(dataBlob);
-}
-
-function downloadFile(blobContent) {
-  let blob = new Blob([base64toBlob(blobContent, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')], {});
-  FileSaver.saveAs(blob, 'report.xlsx');
-}
-
-function base64toBlob(base64Data, contentType) {
-  contentType = contentType || '';
-  let sliceSize = 1024;
-  let byteCharacters = Buffer.from(base64Data, 'base64');
-  let bytesLength = byteCharacters.length;
-  let slicesCount = Math.ceil(bytesLength / sliceSize);
-  let byteArrays = new Array(slicesCount);
-  for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-    let begin = sliceIndex * sliceSize;
-    let end = Math.min(begin + sliceSize, bytesLength);
-
-    let bytes = new Array(end - begin);
-    for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
-      bytes[i] = byteCharacters[offset].charCodeAt(0);
+// copy to share
+if (!window.getSelection) {
+  /* IE */
+  document.body.oncopy = function () {
+    event.returnValue = false;
+    var selectedText = document.selection.createRange().text;
+    var pageInfo =
+      "<br>---------------------<br>来源：<br>" +
+      "链接：" +
+      document.location.href +
+      "<br>转载请注明出处";
+    clipboardData.setData(
+      "Text",
+      selectedText.replace(/\n/g, "<br>") + pageInfo
+    );
+  };
+} else {
+  function addCopyRight() {
+    var body_element = document.getElementsByTagName("body")[0];
+    var selection = window.getSelection();
+    var pageInfo =
+      "<br>---------------------<br>来源：<br>" +
+      "链接：" +
+      document.location.href +
+      "<br>转载请注明出处";
+    var copyText = selection.toString().replace(/\n/g, "<br>"); // Solve the line breaks conversion issue
+    if (copyText) {
+      copyText = copyText + pageInfo;
+      var newDiv = document.createElement("div");
+      newDiv.style.position = "absolute";
+      newDiv.style.left = "-99999px";
+      body_element.appendChild(newDiv);
+      newDiv.innerHTML = copyText;
+      selection.selectAllChildren(newDiv);
+      window.setTimeout(function () {
+        body_element.removeChild(newDiv);
+      }, 0);
     }
-    byteArrays[sliceIndex] = new Uint8Array(bytes);
   }
-  return new Blob(byteArrays, { type: contentType });
+  document.oncopy = addCopyRight;
 }

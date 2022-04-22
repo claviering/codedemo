@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://unpkg.com/dexie@3.2.1/dist/dexie.js"></script>
+  <script>
+    var db = new Dexie("FriendDatabase");
+
+    // DB with single table "friends" with primary key "id" and
+    // indexes on properties "name" and "age"
+    db.version(1).stores({
+      friends: `
+    id,
+    name,
+    age`,
+    });
+    db.friends.updata()
+  </script>
+  <title>Document</title>
+</head>
+
+<body></body>
+
+</html>
