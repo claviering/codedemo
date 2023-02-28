@@ -5,43 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-      .box{
-        width: 400px;
-        height: 400px;
-        overflow: auto;
-      }
-      .box-item{
-        height: 80px;
-        line-height: 40px;
-        background: #ccc;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-    </style>
   </head>
   <body>
-    <div class="box">
-    </div>
+    <p><a href="https://nfrm.southcn.com/" _href="https://nfrm.southcn.com/" target="_self" title="<img src=1 href=1 onerror="javascript:alert(1)"></img>" style="color: #0581f3;text-decoration: none"><img src=1 href=1 onerror="javascript:alert(1)"></img></a></p>
+    <h1 style="width: 100px">123</h1>
   </body>
   <script>
-    let box = document.querySelector('.box')
-    for (let i = 0; i < 20; i++) {
-      box.innerHTML += `<div id=${i} class="box-item">${i}</div>`
-    }
-    let options = {
-      root: box,
-      rootMargin: '0px',
-      threshold: 0.5
-    }
-    let observer = new IntersectionObserver(entries => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        console.log(111);
-      }
-    });
-  }, options);
-  let target = document.querySelector('.box-item:last-child');
-  observer.observe(target);
+    alert("hello");
   </script>
 </html>

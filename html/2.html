@@ -1,92 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-
 </head>
-
 <body>
-  <input type="file" id="file" />
-  <button id="read-file">Read File</button>
-  <button id="read-file" onclick="downloadFromBase64()">download from base64 </button>
+  
 </body>
-<script>
-  /**
-   * data 二进制数据
-   **/
-  function download(file) {
-    // const url = window.URL.createObjectURL(new Blob([data]), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
-    file = new Blob(["This is a sample blob"], { type: "text/plain" });
-    const url = window.URL.createObjectURL(file)
-    console.log(url);
-    const link = document.createElement('a')
-    link.style.display = 'none'
-    link.href = url
-    link.setAttribute('download', 'excel.xlsx')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-  document.querySelector("#read-file").addEventListener('click', function () {
-    // download()
-    // no file selected to read
-    if (document.querySelector("#file").value == '') {
-      console.log('No file selected');
-      return;
-    }
-
-    var file = document.querySelector("#file").files[0];
-    // download(file);
-
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      // binary data
-      // console.log(e.target.result);
-      b64Data = btoa(e.target.result)
-      console.log(b64Data);
-    };
-    reader.onerror = function (e) {
-      // error occurred
-      console.log('Error : ' + e.type);
-    };
-    reader.readAsBinaryString(file);
-  });
-  function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
-  }
-  function downloadFromBase64() {
-    // b64Data = "YWEK"
-    let contentType = "application/octet-stream"
-    const blob = b64toBlob(b64Data, contentType);
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a')
-    link.style.display = 'none'
-    link.href = url
-    link.setAttribute('download', 'excel.xlsx')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-</script>
-
+<script src="./public/js/index.js"></script>
 </html>

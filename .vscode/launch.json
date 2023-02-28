@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "Python",
       "type": "python",
       "request": "launch",
       "program": "${file}",
@@ -14,7 +14,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch Nodejs Program",
       "program": "${file}",
       "skipFiles": [
         "<node_internals>/**"
