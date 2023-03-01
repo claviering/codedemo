@@ -69,6 +69,7 @@ async function getDetail(opendate, fieldName, startTime) {
     if (!res || !res.data || !res.data.length) {
       console.log("查询场次具体信息数据为空");
       console.log(res && res.data);
+      return;
     }
     for (let i = 0; i < res.data.length; i++) {
       const item = res.data[i];
@@ -83,8 +84,10 @@ async function getDetail(opendate, fieldName, startTime) {
       }
     }
     console.log(`没有找${fieldName}:${startTime}的预约信息`);
+    return;
   } catch (error) {
     console.log("查询场次具体信息 error");
+    return;
   }
 }
 
@@ -126,7 +129,7 @@ const startTime = "09:00";
 async function run() {
   let store = null;
   while (true) {
-    await getTime(opendate);
+    // await getTime(opendate);
     store = await getDetail(opendate, fieldName, startTime);
     if (store) break;
     await sleep(1000);
