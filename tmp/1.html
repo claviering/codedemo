@@ -2,15 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>登录界面</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
+  <style>
+    body {
+      background: #f2f2f2;
+    }
+    .login-box {
+      width: 320px;
+      height: 420px;
+      background: #fff;
+      color: #000;
+      margin: 120px auto;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
   <body>
-    <p><a href="https://nfrm.southcn.com/" _href="https://nfrm.southcn.com/" target="_self" title="<img src=1 href=1 onerror="javascript:alert(1)"></img>" style="color: #0581f3;text-decoration: none"><img src=1 href=1 onerror="javascript:alert(1)"></img></a></p>
-    <h1 style="width: 100px">123</h1>
+    <div class="login-box">
+      <h1>登录</h1>
+      <div class="textbox">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="用户名" />
+      </div>
+
+      <div class="textbox">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="密码" />
+      </div>
+
+      <button>登录</button>
+      <p class="forget-link"><a href="#">忘记密码?</a></p>
+      <p class="sign-up">还没账号?<a href="#">注册</a></p>
+    </div>
+
+    <script src="script.js"></script>
   </body>
-  <script>
-    alert("hello");
-  </script>
 </html>

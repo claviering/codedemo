@@ -8,6 +8,7 @@ node_modules
 /**/*.xls
 /**/*.xlsx
 /**/*.json
+/**/*.jsonl
 img
 company
 logs

@@ -15,6 +15,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Nodejs Program",
+      "runtimeExecutable": "/usr/local/bin/node",
       "program": "${file}",
       "skipFiles": [
         "<node_internals>/**"

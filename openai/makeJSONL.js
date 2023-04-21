@@ -1,6 +1,6 @@
 const fs = require("fs");
-const wenaiJSON = require("./文爱词库.json");
-const path = "./wenai.jsonl";
+const wenaiJSON = require("./可爱系二次元bot词库1.5万词V1.2.json");
+const path = "./可爱系二次元bot词库1.5万词V1.2.jsonl";
 let writeStream = fs.createWriteStream(path);
 for (const key in wenaiJSON) {
   let values = wenaiJSON[key];

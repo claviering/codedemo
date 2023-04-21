@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@webtoon/psd": "^0.3.0",
     "aes-256-gcm": "^1.0.3",
     "aliyun-api-gateway": "^1.1.6",
     "axios": "^0.18.0",
@@ -11,9 +12,9 @@
     "bluebird": "^3.7.1",
     "clockpicker": "^0.0.7",
     "coinkey": "^3.0.0",
-    "csv-parser": "^2.2.0",
-    "csv-parse": "^4.4.0",
     "csv": "^5.1.1",
+    "csv-parse": "^4.4.0",
+    "csv-parser": "^2.2.0",
     "csv-writer": "^1.5.0",
     "debug": "^4.1.1",
     "ecdsa": "^0.7.0",
@@ -30,10 +31,11 @@
     "ora": "^3.0.0",
     "pem": "^1.14.2",
     "protobufjs": "^6.9.0",
+    "psd-parser": "^0.1.6",
     "qr-image": "^3.2.0",
     "qs": "^6.6.0",
-    "redis": "^2.8.0",
     "readline-sync": "^1.4.9",
+    "redis": "^2.8.0",
     "secure-random": "^1.1.1",
     "short-uuid": "^3.1.1",
     "sleep": "^6.0.0",
@@ -49,7 +51,9 @@
     "dayjs": "^1.10.5",
     "express": "^4.17.1",
     "mockjs": "^1.1.0",
-    "node-schedule": "^2.0.0"
+    "mongoose": "^7.0.3",
+    "node-schedule": "^2.0.0",
+    "psd": "^3.4.0"
   },
   "scripts": {
     "test": "jest"

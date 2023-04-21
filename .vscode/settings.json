@@ -1,6 +1,32 @@
 {
-  "less.compile": {
-    "compress":  true,
-    "outExt": ".css"
+  "editor.tokenColorCustomizations": {
+    "[One Hunter Theme]": {
+      "textMateRules":[
+        {
+          "scope": ["keyword.operator.logical", "keyword.operator.comparison"],
+          "settings": {
+            "foreground": "#53A1FA"
+          }
+        },
+        {
+          "scope": ["constant.language"],
+          "settings": {
+            "foreground": "#d946ef"
+          }
+        },
+        {
+          "scope": ["storage.modifier.async.js"],
+          "settings": {
+            "foreground": "#F9C35A"
+          }
+        },
+        {
+          "scope": ["variable.other.constant.js"],
+          "settings": {
+            "foreground": "#FF7BA9"
+          }
+        }
+      ]
+    },
   }
 }
