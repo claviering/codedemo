@@ -1,40 +1,29 @@
-#!/usr/local/bin/python
-# -*- coding: utf-8 -*-
+import asyncio
+import websockets
 
-import requests
-
-url = "https://ocr43.p.rapidapi.com/v1/results"
-
-with open("python/captcha.png", "rb") as image_file:
-    encoded_image = image_file.read()
-
-payload = {"image": encoded_image}
 headers = {
-    'content-type': "multipart/form-data",
-    'X-RapidAPI-Key': "3ee6682068msh5fa3b6b97998f57p1a158ajsn64c6e410be0c",
-    'X-RapidAPI-Host': "ocr43.p.rapidapi.com"
+    "Host": "tcdn-ws.itouchtv.cn:3800",
+    "Origin": "https://www.gdtv.cn",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
+    "Cache-Control": "max-age=0",
+    "Connection": "keep-alive",
+    "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
+    "Sec-WebSocket-Key": "bculRRFN9VkxkJrPboCINw==",
+    "Sec-WebSocket-Version": "13"
 }
 
-response = requests.request("POST", url, data=payload, headers=headers)
 
-print(response.text)
-
-
-import requests
-
-url = "https://ocr43.p.rapidapi.com/v1/results"
-data = {
-    'image': open('example.jpg', 'rb')  # 文件上传
-}
-response = requests.post(url, data=data)
-print(response.text)
-
-# upload a file
-import requests
-
-url = "https://ocr43.p.rapidapi.com/v1/results"
-files = {
-    'image': open('example.jpg', 'rb')  # 文件上从
-}
-response = requests.post(url, files=files)
-print(response.text)
+async def connect():
+    async with websockets.connect('wss://tcdn-ws.itouchtv.cn:3800/connect', ssl=False, extra_headers=headers) as websocket:
+        print('Connected')
+        while True:
+            message = '{"status":204,"wsnode":"continue"}'
+            await websocket.send(message)
+            print(f'Sent message: {message}')
+            response = await websocket.recv()
+            print(f'Received response: {response}')
+            await asyncio.sleep(20)
+asyncio.run(connect())

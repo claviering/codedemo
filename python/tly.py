@@ -41,14 +41,14 @@ def getCode():
     # 获取验证码
     response = requests.get(
         "https://tly.com/other/captcha.php?", headers=headers, data=None)
-    print("获取验证码：" + str(response.status_code))
+    print("get code status: " + str(response.status_code))
     url = "http://hnaruto.pythonanywhere.com/upload-image"
     data = {
         'image': response.content  # 验证码图片
     }
     # 验证码识别
     res = requests.post(url, files=data)
-    print("识别验证码: " + res.text)
+    print("OCR: " + res.text)
     return res.text
 
 
@@ -59,8 +59,7 @@ def main():
         # 签到
         check_in_url = "https://tly.com/modules/_checkin.php?captcha=" + code
         response = requests.get(check_in_url, headers=headers, data=None)
-        print("response.text: " + response.text)
-        print("签到: " + str(response.status_code))
+        print("result: " + str(response.status_code))
 
 
 if __name__ == '__main__':

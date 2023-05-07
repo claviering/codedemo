@@ -48,12 +48,15 @@
     "xlsx": "^0.14.1"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "dayjs": "^1.10.5",
     "express": "^4.17.1",
+    "jimp": "^0.22.7",
     "mockjs": "^1.1.0",
     "mongoose": "^7.0.3",
     "node-schedule": "^2.0.0",
-    "psd": "^3.4.0"
+    "psd": "^3.4.0",
+    "qrcode-reader": "^1.0.4"
   },
   "scripts": {
     "test": "jest"
