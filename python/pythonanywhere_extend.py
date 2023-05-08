@@ -41,7 +41,7 @@ def main():
     }
     response = requests.post(
         "https://www.pythonanywhere.com/user/hnaruto/webapps/hnaruto.pythonanywhere.com/extend", headers=headers, data=data)
-    print("pythonanywhere: " + response.status_code)
+    print("pythonanywhere: " + str(response.status_code))
 
 
 if __name__ == '__main__':
