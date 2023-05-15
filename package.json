@@ -12,6 +12,7 @@
     "bluebird": "^3.7.1",
     "clockpicker": "^0.0.7",
     "coinkey": "^3.0.0",
+    "crypto-js": "^4.1.1",
     "csv": "^5.1.1",
     "csv-parse": "^4.4.0",
     "csv-parser": "^2.2.0",

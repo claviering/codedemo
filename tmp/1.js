@@ -1,57 +1,21 @@
-// using axios get html from http://www.21wnw.com/tool/wxue/ueditor.html#
-// queryselect all class itembox
-// format to {id: index, templete: html}
-// save to local file using nodejs
+const crypto = require("crypto");
 
-const axios = require("axios");
-const cheerio = require("cheerio");
-const fs = require("fs");
+// Secret key
+const key = "dfkcY1c3sfuw0Cii9DWjOUO3iQy2hqlDxyvDXd1oVMxwYAJSgeB6phO8eW1dfuwX";
 
-const tabList = [
-  { key: "followContent", label: "关注" },
-  { key: "titleContent", label: "标题" },
-  { key: "textContent", label: "正文" },
-  { key: "separationLineContent", label: "分割线" },
-  { key: "readMoreContent", label: "阅读全文" },
-  { key: "readMoreContent1", label: "阅读全文1" },
-  { key: "promoteContent", label: "互推" },
-  { key: "dynamicBackgroundContent", label: "动态背景" },
-  { key: "graphicAndTextTemplateContent", label: "图文模版" },
-];
+// Data to hash
+const data = ```GET
+https://gdtv-api.gdtv.cn/api/tv/v2/tvChannel?category=0
+1684120837921
+```;
 
-const url = "http://www.21wnw.com/tool/wxue/ueditor.html#";
+// Create HMAC object
+const hmac = crypto.createHmac("sha256", key);
 
-// Get HTML content from URL using axios
-axios
-  .get(url)
-  .then((response) => {
-    // Load HTML content into Cheerio
-    const $ = cheerio.load(response.data);
+// Update with data
+hmac.update(data);
 
-    let data = [];
-
-    // Select all elements with class 'itembox'
-    let id = 1;
-    for (let i = 0; i < tabList.length; i++) {
-      const key = tabList[i].key;
-      const itemboxes = $(`#tab${i + 1} .itembox`);
-
-      // Convert jQuery collection to array of objects with id and template properties
-      const tmp = itemboxes.toArray().map((box, index) => ({
-        id: id++,
-        type: key,
-        template: $.html(box)
-          .replace(/[\n\t]/g, "")
-          .replace(/>\s+</g, "><"),
-      }));
-      data = [...data, ...tmp];
-    }
-
-    // Save data to local file
-    const filename = "output.json";
-    fs.writeFileSync(filename, JSON.stringify(data));
-    console.log(`Data saved to ${filename}`);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+// Finalize and get HMAC
+const signature = hmac.digest("hex");
+console.log(signature);
+// Prints: c42ea058d1f24713325aa3eaae90b9da3c7f0b5eb6252c814485315d452b13b0

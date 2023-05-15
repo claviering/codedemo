@@ -1,26 +1,14 @@
-const FormData = require("form-data");
-const fs = require("fs");
-const axios = require("axios");
+var CryptoJS = require("crypto-js");
 
-const data = new FormData();
-data.append("image", fs.createReadStream("/PATH/TO/captcha.png"));
+// Secret key
+const key = "dfkcY1c3sfuw0Cii9DWjOUO3iQy2hqlDxyvDXd1oVMxwYAJSgeB6phO8eW1dfuwX";
 
-const options = {
-  method: "POST",
-  url: "https://ocr-extract-text.p.rapidapi.com/ocr",
-  headers: {
-    "X-RapidAPI-Key": "3ee6682068msh5fa3b6b97998f57p1a158ajsn64c6e410be0c",
-    "X-RapidAPI-Host": "ocr-extract-text.p.rapidapi.com",
-    ...data.getHeaders(),
-  },
-  data: data,
-};
+// Data to hash
+const data =
+  "GET\nhttps://gdtv-api.gdtv.cn/api/tv/v2/tvMenu?tvChannelPk=53&beginAt=2023-05-09&endAt=2023-05-18\n1684140171729\n";
 
-axios
-  .request(options)
-  .then(function (response) {
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    console.error(error);
-  });
+console.log(data);
+
+var base64 = "";
+base64 = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(data, key));
+console.log(base64);
