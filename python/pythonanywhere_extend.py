@@ -5,6 +5,8 @@
 import requests
 import re
 
+cookie = 'web_app_tab_type=%23tab_id_hnaruto_pythonanywhere_com; cookie_warning_seen=True; __stripe_mid=9e0449b1-34e5-4833-add3-9aaa52fadf15d0034b; csrftoken=MPJ8zjUkxb6F3gHVKmlubjDnVQP8qkR0B4YlF6eUOFZGF3NXdjNuEcNedadKH9NI; sessionid=w6yjqwnuhnxboa6k4wscq3m0wy36g4bj'
+
 
 def main():
     headers = {
@@ -13,7 +15,7 @@ def main():
         "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
         "Cache-Control": "max-age=0",
         "Connection": "keep-alive",
-        "Cookie": "web_app_tab_type=%23tab_id_hnaruto_pythonanywhere_com; cookie_warning_seen=True; __stripe_mid=9e0449b1-34e5-4833-add3-9aaa52fadf15d0034b; csrftoken=MPJ8zjUkxb6F3gHVKmlubjDnVQP8qkR0B4YlF6eUOFZGF3NXdjNuEcNedadKH9NI; sessionid=w6yjqwnuhnxboa6k4wscq3m0wy36g4bj; sessionid=qxsmxadodomra8617x8yvhjf3g5hsdul",
+        "Cookie": cookie,
         "Host": "www.pythonanywhere.com",
         "Referer": "https://www.pythonanywhere.com/user/hnaruto/webapps/",
         "sec-ch-ua-mobile": "?0",
