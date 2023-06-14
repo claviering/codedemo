@@ -94,4 +94,4 @@ Referer: https://servicewechat.com/wxe350a6af6d22b9e8/106/page-frame.html
 Content-Length: 383
 Accept-Language: en-us
 
-userID=8a42f49259b5401a015a25c6236e48a0&cgId=402881b441a660630141a712b12f0046&cgCode=0020C061256&cgtype=3&terminal=10&openDate=2023-03-03&ordertotal=60&os=wx&queryType=android&lon=113.27333860756984&lat=23.134780403969454&subAdress=&sportsNum=5&citys=440100&num8a42f48786839f6801868e78e15b10fb=1&storeIds=8a42f48786839f6801868e78e15b10fb&quanid=&sign=8AE8139CFE29FF39A87ED007BCDD2107
+userID=&cgId=402881b441a660630141a712b12f0046&cgCode=0020C061256&cgtype=3&terminal=10&openDate=2023-03-03&ordertotal=60&os=wx&queryType=android&lon=113.27333860756984&lat=23.134780403969454&subAdress=&sportsNum=5&citys=440100&num8a42f48786839f6801868e78e15b10fb=1&storeIds=8a42f48786839f6801868e78e15b10fb&quanid=&sign=8AE8139CFE29FF39A87ED007BCDD2107
