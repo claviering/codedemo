@@ -94,7 +94,7 @@ async function getDetail(opendate, fieldName, startTime) {
 // 提交订单
 async function order(opendate, ordertotal, resourceid) {
   const params = {
-    userID: "8a42f49259b5401a015a25c6236e48a0",
+    userID: "", // 抓包获取
     cgId: "402881b441a660630141a712b12f0046",
     cgCode: "0020C061256",
     cgtype: "3",

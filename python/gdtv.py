@@ -10,6 +10,7 @@ import hmac
 
 
 def get_params() -> str:
+    print("2. getParam")
     url = "https://tcdn-api.itouchtv.cn/getParam"
     response = requests.get(url)
     data = json.loads(response.text)
@@ -17,16 +18,17 @@ def get_params() -> str:
 
 
 def send_node(ws):
-    print('send_node')
     message = get_params()
     m = {
         "route": "getwsparam",
         "message": message
     }
+    print('3. send wx message')
     ws.send(json.dumps(m))
 
 
 def get_play_url(wsnode: str) -> str:
+    print("5. get play url")
     node_b64 = base64.b64encode(wsnode)
     node_b64_str = node_b64.decode('utf-8')
     play_url = "https://gdtv-api.gdtv.cn/api/tv/v2/tvChannel/53?tvChannelPk=53&node=" + node_b64_str
@@ -37,7 +39,6 @@ def get_play_url(wsnode: str) -> str:
     key = b'dfkcY1c3sfuw0Cii9DWjOUO3iQy2hqlDxyvDXd1oVMxwYAJSgeB6phO8eW1dfuwX'
     s = hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
     signature = str(base64.b64encode(s), 'utf-8')
-    print(signature)
 
     headers = {
         "authority": "gdtv-api.gdtv.cn",
@@ -61,7 +62,7 @@ def get_play_url(wsnode: str) -> str:
         "x-itouchtv-ca-signature": signature,
         "x-itouchtv-ca-timestamp": t,
         "x-itouchtv-client": "WEB_PC",
-        "x-itouchtv-device-id": "WEB_406fb130-eb0c-11ed-a2b1-e3bdef3c8a71"
+        "x-itouchtv-device-id": "WEB_a719ae70-076a-11ee-97d8-61607327fc49"
     }
     response = requests.get(play_url, headers=headers)
     print(response.status_code)
@@ -71,9 +72,10 @@ def get_play_url(wsnode: str) -> str:
 
 
 def on_message(ws, message):
-    print(message)
+    print("4. on_message", message)
     m = json.loads(message)
     if (m['status'] == 201):
+        get_params()
         get_play_url(m['wsnode'].encode('utf-8'))
 
 
@@ -86,7 +88,7 @@ def on_close(ws, close_status_code, close_msg):
 
 
 def on_open(ws):
-    print("WebSocket Connected")
+    print("1. WebSocket Connected")
     send_node(ws)
 
     def run():
@@ -100,10 +102,9 @@ def on_open(ws):
 if __name__ == "__main__":
     websocket.enableTrace(True)
     ws = websocket.WebSocketApp("wss://tcdn-ws.itouchtv.cn:3800/connect")
-    # ws = websocket.WebSocket(sslopt={"cert_reqs": ssl.CERT_NONE})
-    # ws.connect("wss://tcdn-ws.itouchtv.cn:3800/connect")
     ws.on_message = on_message
     ws.on_error = on_error
     ws.on_close = on_close
     ws.on_open = on_open
     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+    print('end')
