@@ -14,11 +14,6 @@ webapps_url = "https://www.pythonanywhere.com/user/hnaruto/webapps/"
 extend_url = "https://www.pythonanywhere.com/user/hnaruto/webapps/hnaruto.pythonanywhere.com/extend"
 
 
-def get_cookie(response):
-    set_cookie = response.headers.get('Set-Cookie')
-    return set_cookie
-
-
 def get_headers(cookie, referer):
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -55,8 +50,6 @@ def getToken(response):
 def login(sss, username, password):
     headers = get_headers(None, login_url)
     response = sss.get(login_url, headers=headers)
-    cookie = get_cookie(response)
-    headers['Cookie'] = cookie
     csrfmiddlewaretoken = getToken(response)
     data = {
         'auth-username': username,
@@ -69,10 +62,15 @@ def login(sss, username, password):
 
 
 def extend(sss):
-    headers = get_headers(None, webapps_url)
-    response = sss.get(webapps_url, headers=headers)
-    cookie = get_cookie(response)
-    headers['Cookie'] = cookie
+    response = sss.get(webapps_url)
+    regex_pattern = r'<strong>(.*?)</strong>'
+    matches = re.findall(regex_pattern, response.text.replace('\n', ''))
+    inner_text = ' '.join(matches)
+    print("This site will be disabled on " + inner_text)
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Referer": "https://www.pythonanywhere.com/user/hnaruto/webapps/",
+    }
     csrfmiddlewaretoken = getToken(response)
     data = {
         'csrfmiddlewaretoken': csrfmiddlewaretoken

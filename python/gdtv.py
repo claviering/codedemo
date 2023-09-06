@@ -75,7 +75,6 @@ def on_message(ws, message):
     print("4. on_message", message)
     m = json.loads(message)
     if (m['status'] == 201):
-        get_params()
         get_play_url(m['wsnode'].encode('utf-8'))
 
 

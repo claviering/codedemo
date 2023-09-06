@@ -45,6 +45,7 @@
     "urllib": "^2.34.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
+    "websocket": "^1.0.34",
     "wechaty": "^0.22.6",
     "xlsx": "^0.14.1"
   },

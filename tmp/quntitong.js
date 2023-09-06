@@ -122,7 +122,7 @@ async function order(opendate, ordertotal, resourceid) {
   }
 }
 
-const opendate = "2023-03-04";
+const opendate = "2023-06-24";
 const fieldName = "网球场地6";
 const startTime = "09:00";
 
