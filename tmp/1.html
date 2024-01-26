@@ -1,576 +1,296 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
-    <meta name="apple-itunes-app" content="app-id=1041891085" />
-    <meta
-      name="keywords"
-      content="云浮通，云浮，云浮新闻，云浮日报，云浮头条"
-    />
-    <meta
-      name="description"
-      content="“云浮通”是云浮市委、市政府官方移动客户端，是一款综合资讯视听服务类App，是广东首个拥有学习功能的新闻客户端，集新闻发布、理论学习、政务民生服务、大数据分析咨询等多种功能于一体，致力打造具有国内传播力、影响力的“新闻+政务服务商务”综合平台，全力建设属于云浮人自己的党媒App。"
-    />
-    <meta
-      content="black-translucent"
-      name="apple-mobile-web-app-status-bar-style"
-    />
-    <meta content="telephone=no" name="format-detection" />
-    <meta content="email=no" name="format-detection" />
-    <meta name="screen-orientation" content="portrait" />
-    <meta name="x5-orientation" content="portrait" />
-    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
-    <meta name="renderer" content="webkit" />
-    <meta name="colID" content="14" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="no-cache" />
-    <link
-      rel="icon"
-      href="https://static.yft.ndoe.cn/common/assets/images/favicon.ico"
-    />
-    <title>首页新闻-云浮通</title>
-    <script>
-      (function (doc, win) {
-        var docEl = doc.documentElement,
-          resizeEvt =
-            "orientationchange" in window ? "orientationchange" : "resize",
-          recalc = function () {
-            var clientWidth = docEl.clientWidth;
-            if (!clientWidth) {
-              return;
-            }
-            docEl.style.fontSize = 100 * (clientWidth / 375) + "px";
-          };
-        if (!doc.addEventListener) {
-          return;
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    (function (name, context, definition) {
+  if (typeof module != 'undefined' && module.exports) module.exports = definition()
+  else if (typeof define == 'function' && define.amd) define(definition)
+  else context[name] = definition()
+})('Selection', this, function () {
+  /**
+   * container 容器
+   * menus 菜单
+   * @param {*} options 
+   * @returns 
+   */
+  function selection(options) {
+    let eventDom = null;
+    let getSelection = null;
+    const MENU_ID = 'select-menu';
+    let isShowMenu = false;
+    let selectText = ''
+    function init() {
+      insertCss()
+      initMenu()
+      eventDom = document.querySelector(options.container);
+      eventDom.style.position = 'relative';
+      getSelection = window.getSelection || window.document.getSelection || window.document.selection;
+      eventDom.addEventListener('touchend', touchend);
+      eventDom.addEventListener('mouseup', touchend);
+      document.addEventListener('selectionchange', selectionchange);
+    }
+    function initMenu() {
+      // 创建一个菜单元素
+      var menu = document.createElement('div');
+      menu.id = MENU_ID;
+      menu.style.left = `50%`;
+      menu.style.transform = `translateX(-50%);`;
+      menu.style.opacity = `0`;
+      menu.style.zIndex = `-1`;
+      // 添加菜单项
+      var items = options.menus;
+      for (var i = 0; i < items.length; i++) {
+        var item = document.createElement('div');
+        item.innerHTML = items[i].title;
+        item.setAttribute('data-index', i)
+        item.onclick = function () {
+          // 执行菜单项操作
+          if (this.innerHTML === '全选') {
+            selectAll()
+            items[this.dataset.index].onClick(selectText);
+          } else {
+            console.log(this.dataset.index);;
+            items[this.dataset.index].onClick(selectText);
+            // 取消全部选区，会自动隐藏菜单
+            getSelection().removeAllRanges();
+          }
+        };
+        menu.appendChild(item);
+      }
+      // 将菜单添加到body元素中
+      document.body.appendChild(menu);
+      // 监听菜单元素的click事件，阻止事件冒泡
+      menu.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+    }
+    // 显示菜单
+    function showMenu() {
+      console.log('显示菜单');
+      isShowMenu = true;
+      var range = getSelection().getRangeAt(0);
+      var rect = range.getBoundingClientRect();
+      var menuX = rect.left;
+      var menuY = rect.top - eventDom.getBoundingClientRect().top - 35;
+      var menu = document.getElementById(MENU_ID);
+      if (menu) {
+        menu.style.left = `50%`;
+        menu.style.top = `${menuY}px`;
+        menu.style.transform = `translateX(-50%);`;
+        menu.style.opacity = `1`;
+        menu.style.zIndex = '1';
+      }
+    }
+
+    // 隐藏菜单
+    function hideMenu() {
+      var menu = document.getElementById(MENU_ID);
+      if (menu) {
+        console.log('隐藏菜单');
+        isShowMenu = false;
+        selectText = '';
+        menu.style.opacity = '0';
+        menu.style.zIndex = '-1';
+      }
+    }
+
+    // 选择一整段
+    function modify() {
+      getSelection().modify("extend", "backward", "paragraphboundary");
+      var focusNode = getSelection().focusNode;
+      var range = getSelection().getRangeAt(0);
+      range.setEnd(range.endContainer, focusNode.textContent.length);
+      getSelection().addRange(range);
+      console.log("modify: ", getSelection().toString());
+      selectText = getSelection().toString();
+      return getSelection().toString();
+    }
+
+    function sleep(time) {
+      return new Promise(resolve => setTimeout(resolve, time))
+    }
+
+    async function touchend(e) {
+      // 选择一段之后，再点击其他区域，理论上选区是空，但是safari 上不能立马获取最新的选区
+      await sleep(100)
+      let curSelectText = getSelection().toString();
+      console.log('curSelectText', curSelectText);
+      console.log('isShowMenu', isShowMenu);
+      if ((!isShowMenu && curSelectText) ||
+        (isShowMenu && curSelectText && !selectText) ||
+        (isShowMenu && curSelectText && selectText && !isSameParagraph(selectText, curSelectText))
+      ) {
+        modify();
+        viewTransition(showMenu);
+      } else if (isShowMenu && curSelectText && selectText && isSameParagraph(selectText, curSelectText)) {
+        modifySentence(selectText, curSelectText);
+      } else if (isShowMenu && !curSelectText) {
+        getSelection().removeAllRanges();
+        hideMenu()
+      }
+      e.stopPropagation();
+    }
+
+    function isSameParagraph(str1, str2) {
+      let shortStr = str1.length < str2.length ? str1 : str2;
+      let longStr = str1.length < str2.length ? str2 : str1;
+      return longStr.endsWith(shortStr) || longStr.startsWith(shortStr);
+    }
+
+    function modifySentence(cur, next) {
+      if (next.endsWith(cur) || cur.endsWith(next)) { // 向后增加内容,向后减少内容
+        getSelection().modify("extend", "backward", "sentenceboundary");
+      } else if (cur.startsWith(next) || next.startsWith(cur)) { // 向前减少内容,向前增加内容
+        getSelection().modify("extend", "forward", "sentenceboundary");
+      }
+      selectText = getSelection().toString();
+    }
+
+    async function selectionchange() {
+      await sleep(100)
+      let curSelectText = getSelection().toString();
+      if (curSelectText === '') {
+        hideMenu()
+      }
+    }
+
+    function insertCss() {
+      var style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = `
+        #${MENU_ID} {
+          position: absolute;
+          left: 50%;
+          background-color: rgb(255, 255, 255);
+          box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
+          border-radius: 18px;
+          padding: 10px;
+          display: flex;
+          transform: translateX(-50%);
+          width: max-content;
+          user-select: none;
+          transition: opacity 0.3s;
+          opacity: 0;
+          view-transition-name: ${MENU_ID};
+          z-index: -1;
         }
-        win.addEventListener(resizeEvt, recalc, false);
-        doc.addEventListener("DOMContentLoaded", recalc, false);
-        setTimeout(function () {
-          document.getElementsByTagName("body")[0].style.height =
-            docEl.clientHeight + "px";
-        }, 20);
-      })(document, window);
-    </script>
-    <link
-      href="https://devstatic.yft.ndoe.cn/hd/yft-touch-static/css/main.css?v=1692859077044"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="header">
-      <a class="channel-logo" href="https://static.yft.ndoe.cn/tools/yft-down/"
-        ><div class="channel-logo-img"></div
-      ></a>
-      <div class="channel-dropdown">
-        <div class="channel-dropdown-img"></div>
-      </div>
-      <div class="dropdown-mask"></div>
-      <div class="dropdown"><div class="dropdown-container"></div></div>
-      <div class="navbar" data-active="index">
-        <div class="swiper-wrapper">
-          <a
-            href="http://127.0.0.1:8088/pindao1111"
-            data-channel="pindao1111"
-            class="channel swiper-slide pindao1111"
-            >频道1111</a
-          ><a
-            href="http://127.0.0.1:8088/sssssss"
-            data-channel="sssssss"
-            class="channel swiper-slide sssssss"
-            >sssssss</a
-          ><a
-            href="http://127.0.0.1:8088/sssss"
-            data-channel="sssss"
-            class="channel swiper-slide sssss"
-            >sssss</a
-          ><a
-            href="http://127.0.0.1:8088/123"
-            data-channel="123"
-            class="channel swiper-slide 123"
-            >123</a
-          ><a
-            href="http://127.0.0.1:8088/124"
-            data-channel="124"
-            class="channel swiper-slide 124"
-            >123</a
-          ><a
-            href="http://127.0.0.1:8088/wukelanshishiqianxian"
-            data-channel="wukelanshishiqianxian"
-            class="channel swiper-slide wukelanshishiqianxian"
-            >乌克兰实时前线</a
-          ><a
-            href="http://127.0.0.1:8088/minsheng123456"
-            data-channel="minsheng123456"
-            class="channel swiper-slide minsheng123456"
-            >民生123456</a
-          ><a
-            href="http://127.0.0.1:8088/pindao3"
-            data-channel="pindao3"
-            class="channel swiper-slide pindao3"
-            >频道3</a
-          ><a
-            href="http://127.0.0.1:8088/12312"
-            data-channel="12312"
-            class="channel swiper-slide 12312"
-            >12312</a
-          ><a
-            href="http://127.0.0.1:8088/1231231231"
-            data-channel="1231231231"
-            class="channel swiper-slide 1231231231"
-            >1231231231</a
-          ><a
-            href="http://127.0.0.1:8088/chongchongchong"
-            data-channel="chongchongchong"
-            class="channel swiper-slide chongchongchong"
-            >冲冲冲</a
-          ><a
-            href="http://127.0.0.1:8088/dasdasdasda"
-            data-channel="dasdasdasda"
-            class="channel swiper-slide dasdasdasda"
-            >dasdasdasda</a
-          ><a
-            href="http://127.0.0.1:8088/tudouchidabian5"
-            data-channel="tudouchidabian5"
-            class="channel swiper-slide tudouchidabian5"
-            >土豆吃大便5</a
-          ><a
-            href="http://127.0.0.1:8088/tudouchidabian6"
-            data-channel="tudouchidabian6"
-            class="channel swiper-slide tudouchidabian6"
-            >土豆吃大便5</a
-          ><a
-            href="http://127.0.0.1:8088/index"
-            data-channel="index"
-            class="channel swiper-slide index"
-            >首页</a
-          ><a
-            href="http://127.0.0.1:8088/tudouchidabian7"
-            data-channel="tudouchidabian7"
-            class="channel swiper-slide tudouchidabian7"
-            >土豆吃大便5</a
-          ><a
-            href="http://127.0.0.1:8088/tudouchidabian"
-            data-channel="tudouchidabian"
-            class="channel swiper-slide tudouchidabian"
-            >土豆吃大便</a
-          >
-        </div>
-      </div>
-      <div class="all-channel-caption">所有频道</div>
+        #${MENU_ID} > div {
+          cursor: pointer;
+          font-size: 14px;
+          color: #212224;
+        }
+        #${MENU_ID} > div + div {
+          margin-left: 16px;
+        }
+      `;
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function viewTransition(cb) {
+      if (document.startViewTransition) { // 如果支持就视图变换
+        document.startViewTransition(() => { // 开始视图变换
+          cb()
+        });
+      } else { // 不支持就执行原来的逻辑
+        cb()
+      }
+    }
+
+    function selectAll() {
+      getSelection().selectAllChildren(eventDom);
+    }
+
+
+
+    return init;
+  }
+  var F = function (target, options, env) {
+    var that = this;
+    console.log('init selection...', target, options, env);
+    var shareCard = {key: 'shareCard', title: '标注并分享', onClick: function(selectText) {
+      console.log('标注并分享:', selectText)
+      that._nativeFun(1, selectText)
+    }};
+    var copy = {key: 'copy', title: '复制', onClick: function(selectText) {
+      console.log('复制')
+      that._nativeFun(2, selectText)
+    }};
+    var share = {key: 'share', title: '分享', onClick: function(selectText) {
+      console.log('分享')
+      that._nativeFun(3, selectText)
+    }};
+    var selectAll = {key: 'selectAll', title: '全选', onClick: function(selectText) {
+      console.log('全选')
+      that._nativeFun(5, selectText)
+    }};
+    var search = {key: 'search', title: '网页搜索', onClick: function(selectText) {
+      console.log('网页搜索')
+      that._nativeFun(4, selectText)
+    }};
+    var menus = options.shareCard ? [shareCard, copy, share, selectAll, search] : [copy, share, selectAll, search];
+    this._init(target, menus)
+  }
+  F.prototype = {
+    _init: function (target, menus) {
+      var init = selection({
+        container: target,
+        menus: menus
+      })
+      init()
+    },
+    _nativeFun: function (action, text) {
+      var params = {
+        action: action,
+        text: text,
+      }
+      try {
+        window.webkit.messageHandlers.webViewMenuClick.postMessage(params);
+      } catch (e) {
+        try {
+          window.activity.webViewMenuClick(JSON.stringify(params));
+        } catch (e) { }
+      }
+    }
+  }
+  return F;
+})
+
+  </script>
+</head>
+<body>
+  <div id="article_body">
+    <!-- 内容 -->
+    <div id="content">
+      <p>
+        Click somewhere in this example. Then click the button below to expand the
+        selection. Watch what happens!
+      </p>
+      <p>
+        Et harum quidem rerum facilis est et expedita distinctio. Nam libero
+        tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
+        minus id quod maxime placeat facere possimus, omnis voluptas assumenda
+        est, omnis dolor repellendus.
+      </p>
+      <p>快和慢是相对的，是分场合的。</p>
+      <p>
+        当你和周遭的车辆差不多的速度，无论是高速上还是城市道路，这都是对的。这时候，你不能无缘无故地快，否则对自己对别人都是一种危险，你也同样不能无缘无故地慢，比如高速上，别人都在100、120，你甚至都低于最低限速地开，你认为你安全，但那是别人用自己的命帮你换来的，而你又凭什么用别人的命换来你所谓的安全？可能说你不敢开快，又一定要出远门，可以，但请你上下面的国道省道开，没有人有义务帮你创造安全的氛围，这是一种规则，你破坏它，让别人承担后果，你是谁啊？你也知道坑了别人，别人为什么要被你坑？你是谁啊？谁给你的这种别人都要按照你的规则来的特权？
+      </p>
+      <p>
+        在这个社会上，如果你适应不了某一项规则，要么你不去参与进来，这是你的权利，如果你一定要参与进来，你必须要提高自己的技能。你说你不敢开快，你认为开快会撞车。这属于你的驾驶技能不够，那么，你需要做的，不是让全社会的车辆迁就你，理解你，而是赶快提高自己的驾驶技能。你说不敢开快，那么很简单，你要么别开车，要么提高驾驶技能。你说你有出门的需求，所以又必须开车，那么，就可以理解为：大家都迁就我吧，不要觉得我开车慢，我改变肯定是不可能的了，为了避让我，你们撞伤了撞死了，不关我事啊，我就这个技术，你们不能不迁就我。
+      </p>
+      <p>看你说的这些，我总的感觉是，在开车这件事上，你这真霸道！</p>
+      <p>
+        保护你，是你自己的事情，想保护自己，就要提高驾驶技能。而你现在的情况，根本不去你自己保护自己，而是别人在保护你，你在牺牲别人的利益在保护自己，这就是你错的地方。
+      </p>
     </div>
-    <div class="news mescroll" id="news" style="display: none">
-      <div class="carousel-wrapper">
-        <div class="carousel">
-          <div class="swiper-wrapper">
-            <a
-              href="https://devstatic.nfapp.southcn.com/content/202210/17/c385037.html"
-              data-originColID="14"
-              class="swiper-slide carousel-item"
-              ><img
-                class="carousel-pic lazyload"
-                src="https://static.yft.ndoe.cn/common/assets/images/yfposter.png"
-                data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-                alt="测试图片和视频1" />
-              <div class="carousel-caption">
-                <h1 class="carousel-title text-overflow">测试图片和视频1</h1>
-              </div>
-              <div class="carousel-mask"></div></a
-            ><a
-              href="https://devstatic.yft.ndoe.cn/content/202210/17/666670.html"
-              data-originColID="14"
-              class="swiper-slide carousel-item"
-              ><img
-                class="carousel-pic lazyload"
-                src="https://static.yft.ndoe.cn/common/assets/images/yfposter.png"
-                data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-                alt="测试图片和视频0" />
-              <div class="carousel-caption">
-                <h1 class="carousel-title text-overflow">测试图片和视频0</h1>
-              </div>
-              <div class="carousel-mask"></div
-            ></a>
-          </div>
-          <div class="swiper-pagination"></div>
-        </div>
-      </div>
-      <div class="service-wrap" style="display: none" data-fixed="1">
-        <div class="service service_horizontal service_horizontal_two">
-          <div
-            class="service-item"
-            data-id="10"
-            data-columnId="14"
-            data-name="IG牛逼app"
-            data-serviceType="0"
-            data-articleId="0"
-            data-linkUrl="www.baidu.com"
-          >
-            <img
-              class="icon"
-              src="https://ms.bdimg.com/pacific/0/pic/795113326_450709634.jpg?x=0&y=0&h=150&w=242&vh=150.00&vw=242.00&oh=150.00&ow=242.00"
-              alt=""
-            /><span class="name">IG牛逼app</span>
-          </div>
-          <div
-            class="service-item"
-            data-id="7"
-            data-columnId="14"
-            data-name="大众桑塔纳app"
-            data-serviceType="1"
-            data-articleId="0"
-            data-linkUrl=""
-          >
-            <img
-              class="icon"
-              src="https://ms.bdimg.com/pacific/0/pic/795113326_450709634.jpg?x=0&y=0&h=150&w=242&vh=150.00&vw=242.00&oh=150.00&ow=242.00"
-              alt=""
-            /><span class="name">大众桑塔纳app</span>
-          </div>
-          <div
-            class="service-item"
-            data-id="9"
-            data-columnId="14"
-            data-name="IG牛逼2"
-            data-serviceType="0"
-            data-articleId="0"
-            data-linkUrl="www.id.com"
-          >
-            <img
-              class="icon"
-              src="https://ms.bdimg.com/pacific/0/pic/795113326_450709634.jpg?x=0&y=0&h=150&w=242&vh=150.00&vw=242.00&oh=150.00&ow=242.00"
-              alt=""
-            /><span class="name">IG牛逼2</span>
-          </div>
-          <div
-            class="service-item"
-            data-id="8"
-            data-columnId="14"
-            data-name="IG牛逼"
-            data-serviceType="0"
-            data-articleId="0"
-            data-linkUrl="www.id.com"
-          >
-            <img
-              class="icon"
-              src="https://ms.bdimg.com/pacific/0/pic/795113326_450709634.jpg?x=0&y=0&h=150&w=242&vh=150.00&vw=242.00&oh=150.00&ow=242.00"
-              alt=""
-            /><span class="name">IG牛逼</span>
-          </div>
-        </div>
-      </div>
-      <div class="articles">
-        <div
-          class="service-wrap service-article"
-          style="display: none"
-          data-fixed="0"
-        >
-          <div class="service service_horizontal service_horizontal_two">
-            <div
-              class="service-item"
-              data-id="5"
-              data-columnId=""
-              data-name="vote-templat"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/9f2504906e8349d2879285c00fedc1c5.png"
-                alt=""
-              /><span class="name">vote-templat</span>
-            </div>
-            <div
-              class="service-item"
-              data-id="6"
-              data-columnId=""
-              data-name="photo2"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/ba69477eecbc4d9392038192945a0672.png"
-                alt=""
-              /><span class="name">photo2</span>
-            </div>
-            <div
-              class="service-item"
-              data-id="7"
-              data-columnId=""
-              data-name="vote-templat"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/5ea1e04156e64595b59b481614e75fad.png"
-                alt=""
-              /><span class="name">vote-templat</span>
-            </div>
-          </div>
-        </div>
-        <div
-          class="article topic-article"
-          data-originColID="14"
-          data-href=""
-          data-article="666690"
-        >
-          <p class="article-title text-overflow">
-            列表视频测试4列表视频测试4列表视频测试4
-          </p>
-          <img
-            class="topic-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="列表视频测试4列表视频测试4列表视频测试4"
-          />
-          <div class="article-detail">
-            <span class="article-resource">云浮通</span
-            ><span
-              data-publishtime="2022-10-17 08:01:22"
-              class="article-publishtime"
-            ></span
-            ><span class="article-tag normal-tag">视频</span>
-          </div>
-          <span class="icon icon-video"></span>
-        </div>
-        <div
-          class="article normal-article theme-default"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666779"
-          data-article="666779"
-        >
-          <div class="article-info no-pic">
-            <p class="article-title text-overflow">1123123123</p>
-            <div class="article-detail">
-              <span class="article-resource">123</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-        </div>
-        <div class="service-wrap-card">
-          <div
-            class="special-live-card article"
-            data-originColID="27"
-            data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666778"
-            data-article="666778"
-          >
-            <img
-              class="icon"
-              src="https://static.yft.ndoe.cn/common/assets/images/icon48_zhibo.png"
-              alt=""
-            />
-            <div class="special-live-title">正在直播</div>
-          </div>
-        </div>
-        <div
-          class="article normal-article"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666777"
-          data-article="666777"
-        >
-          <div class="article-info">
-            <p class="article-title text-overflow">预告直播</p>
-            <div class="article-detail">
-              <span class="article-resource nor-overflow">云浮通</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-          <img
-            class="normal-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="预告直播"
-          /><span class="icon-tag tag-gray">直播回顾</span>
-        </div>
-        <div
-          class="service-wrap service-article"
-          style="display: none"
-          data-fixed="0"
-        >
-          <div class="service">
-            <div
-              class="service-item"
-              data-id="1"
-              data-columnId=""
-              data-name="vote-templat"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/9f2504906e8349d2879285c00fedc1c5.png"
-                alt=""
-              /><span class="name">vote-templat</span>
-            </div>
-            <div
-              class="service-item"
-              data-id="3"
-              data-columnId=""
-              data-name="photo2"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/ba69477eecbc4d9392038192945a0672.png"
-                alt=""
-              /><span class="name">photo2</span>
-            </div>
-            <div
-              class="service-item"
-              data-id="4"
-              data-columnId=""
-              data-name="vote-templat"
-              data-serviceType="0"
-              data-articleId="0"
-              data-linkUrl="https://devnfplusperm.nfapp.southcn.com/"
-            >
-              <img
-                class="icon"
-                src="https://devpic.nfapp.southcn.com/yft-cms/image/202308/17/5ea1e04156e64595b59b481614e75fad.png"
-                alt=""
-              /><span class="name">vote-templat</span>
-            </div>
-          </div>
-        </div>
-        <div
-          class="article normal-article"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666776"
-          data-article="666776"
-        >
-          <div class="article-info">
-            <p class="article-title text-overflow">回放直播</p>
-            <div class="article-detail">
-              <span class="article-resource nor-overflow">云浮通</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-          <img
-            class="normal-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="回放直播"
-          /><span class="icon-tag tag-gray">直播回顾</span>
-        </div>
-        <div
-          class="article normal-article"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666775"
-          data-article="666775"
-        >
-          <div class="article-info">
-            <p class="article-title text-overflow">暂停直播</p>
-            <div class="article-detail">
-              <span class="article-resource nor-overflow">云浮通</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-          <img
-            class="normal-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="暂停直播"
-          /><span class="icon icon-live"
-            ><i class="bar-1"></i><i class="bar-2"></i
-            ><i class="bar-3"></i>直播中</span
-          >
-        </div>
-        <div
-          class="article normal-article"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666774"
-          data-article="666774"
-        >
-          <div class="article-info">
-            <p class="article-title text-overflow">未开始直播</p>
-            <div class="article-detail">
-              <span class="article-resource nor-overflow">云浮通</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-          <img
-            class="normal-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="未开始直播"
-          /><span class="icon-tag tag-blue">直播预告</span>
-        </div>
-        <div
-          class="article normal-article"
-          data-originColID="27"
-          data-href="https://devstatic.yft.ndoe.cn/hd/yft-live-h5/666773"
-          data-article="666773"
-        >
-          <div class="article-info">
-            <p class="article-title text-overflow">直播结束</p>
-            <div class="article-detail">
-              <span class="article-resource nor-overflow">云浮通</span
-              ><span
-                data-publishtime="2022-12-05 11:09:02"
-                class="article-publishtime"
-              ></span
-              ><span class="article-tag normal-tag">直播</span>
-            </div>
-          </div>
-          <img
-            class="normal-article-pic lazyload"
-            src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            data-src="https://devpic.nfapp.southcn.com/nfplus/ossfs/pic/xy/202210/17/t1_(-5X53X-5X53)3664422dc12049ddbac2152704ded284.jpg"
-            alt="直播结束"
-          /><span class="icon-tag tag-gray">直播回顾</span>
-        </div>
-      </div>
-    </div>
-    <div class="footer" style="display: none">
-      <div class="nf-banner"><div class="close"></div></div>
-    </div>
-    <script
-      type="text/javascript"
-      src="https://devstatic.yft.ndoe.cn/hd/yft-touch-static/js/vendors.js?v=1692859077044"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://devstatic.yft.ndoe.cn/hd/yft-touch-static/js/main.js?v=1692859077044"
-    ></script>
-    <script>
-      var _hmt = _hmt || [];
-      (function () {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?8d8c5b61e095a0f68b4ec3e26811acba";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-      })();
-    </script>
-  </body>
+  </div>
+</body>
+<script>
+      new Selection("#article_body #content", {
+      shareCard: 1
+    }, window.NFP_ENV);
+</script>
 </html>

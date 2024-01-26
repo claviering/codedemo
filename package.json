@@ -33,6 +33,7 @@
     "pem": "^1.14.2",
     "protobufjs": "^6.9.0",
     "psd-parser": "^0.1.6",
+    "pug": "^3.0.2",
     "qr-image": "^3.2.0",
     "qs": "^6.6.0",
     "readline-sync": "^1.4.9",

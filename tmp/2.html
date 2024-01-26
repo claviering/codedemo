@@ -1,33 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script
-      async
-      src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"
-    ></script>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>选择文字后弹出菜单</title>
+</head>
+<body>
+    <body>
+        <p>
+          Click somewhere in this example. Then click the button below to expand the
+          selection. Watch what happens!
+        </p>
+        <p>
+          Et harum quidem rerum facilis est et expedita distinctio. Nam libero
+          tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
+          minus id quod maxime placeat facere possimus, omnis voluptas assumenda
+          est, omnis dolor repellendus.
+        </p>
+        <p>快和慢是相对的，是分场合的。</p>
+        <p>
+          当你和周遭的车辆差不多的速度，无论是高速上还是城市道路，这都是对的。这时候，你不能无缘无故地快，否则对自己对别人都是一种危险，你也同样不能无缘无故地慢，比如高速上，别人都在100、120，你甚至都低于最低限速地开，你认为你安全，但那是别人用自己的命帮你换来的，而你又凭什么用别人的命换来你所谓的安全？可能说你不敢开快，又一定要出远门，可以，但请你上下面的国道省道开，没有人有义务帮你创造安全的氛围，这是一种规则，你破坏它，让别人承担后果，你是谁啊？你也知道坑了别人，别人为什么要被你坑？你是谁啊？谁给你的这种别人都要按照你的规则来的特权？
+        </p>
+        <p>
+          在这个社会上，如果你适应不了某一项规则，要么你不去参与进来，这是你的权利，如果你一定要参与进来，你必须要提高自己的技能。你说你不敢开快，你认为开快会撞车。这属于你的驾驶技能不够，那么，你需要做的，不是让全社会的车辆迁就你，理解你，而是赶快提高自己的驾驶技能。你说不敢开快，那么很简单，你要么别开车，要么提高驾驶技能。你说你有出门的需求，所以又必须开车，那么，就可以理解为：大家都迁就我吧，不要觉得我开车慢，我改变肯定是不可能的了，为了避让我，你们撞伤了撞死了，不关我事啊，我就这个技术，你们不能不迁就我。
+        </p>
+        <p>看你说的这些，我总的感觉是，在开车这件事上，你这真霸道！</p>
+        <p>
+          保护你，是你自己的事情，想保护自己，就要提高驾驶技能。而你现在的情况，根本不去你自己保护自己，而是别人在保护你，你在牺牲别人的利益在保护自己，这就是你错的地方。
+        </p>
+      </body>
 
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
-        }
-      }
-    </script>
-    <title>Document</title>
-  </head>
-  <body></body>
   <script>
-    function initContent() {
-      let sphereGeometry = new THREE.SphereGeometry(16, 50, 50);
-      let texture = new THREE.TextureLoader().load("./tmp/livingRoom.jpg");
-      let sphereMaterial = new THREE.MeshBasicMaterial({ map: texture });
-      let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      scene.add(sphere);
-      sphereGeometry.scale(16, 16, -16);
+    // 监听文本元素的mouseup事件
+    document.querySelector('body').addEventListener('mouseup', function(e) {
+      // 判断是否有选中文本
+      if (window.getSelection().toString()) {
+        hideMenu()
+        // 获取选区范围
+        var range = window.getSelection().getRangeAt(0);
+        console.log('range', range);
+        // 获取选区矩形框
+        var rect = range.getBoundingClientRect();
+        console.log('rect', rect.left);
+        // 计算菜单位置
+        var menuX = rect.left;
+        var menuY = rect.top - 40; // 调整菜单位置，使其稍微靠上
+        // 显示菜单
+        showMenu(menuX, menuY);
+        // 阻止事件冒泡
+        e.stopPropagation();
+      }
+    });
+
+    // 显示菜单
+    function showMenu(x, y) {
+      // 创建一个菜单元素
+      var menu = document.createElement('div');
+      menu.id = 'menu';
+      menu.style.position = 'absolute';
+      menu.style.left = x + 'px';
+      menu.style.top = y + 'px';
+      menu.style.backgroundColor = '#fff';
+      menu.style.border = '1px solid #ccc';
+      menu.style.padding = '10px';
+      // 添加菜单项
+      var items = ['复制', '粘贴', '剪切'];
+      for (var i = 0; i < items.length; i++) {
+        var item = document.createElement('a');
+        item.href = 'javascript:;';
+        item.innerHTML = items[i];
+        item.onclick = function() {
+          // 执行菜单项操作
+          alert(this.innerHTML);
+          // 隐藏菜单
+          hideMenu();
+        };
+        menu.appendChild(item);
+      }
+      // 将菜单添加到body元素中
+      document.body.appendChild(menu);
+      // 监听菜单元素的click事件，阻止事件冒泡
+      menu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
     }
-    // initContent();
+
+    // 隐藏菜单
+    function hideMenu() {
+      var menu = document.getElementById('menu');
+      if (menu) {
+          menu.parentNode.removeChild(menu);
+      }
+    }
+    // 点击空白处隐藏菜单
+    document.body.addEventListener('click', function(e) {
+      if (!e.target.closest('#menu') && !window.getSelection().toString()) {
+        hideMenu();
+      }
+    });
   </script>
+</body>
 </html>
